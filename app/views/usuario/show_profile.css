@@ -1,0 +1,302 @@
+* {
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+::selection {
+  background-color: #fff;
+  color: #00008b;
+}
+
+/* MENU */
+
+header hr {
+  border: 1px solid gray;
+}
+
+nav {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 20px;
+  background-color: darkblue;
+}
+
+/* @supports (-webkit-text-stroke: .5px black) {
+    h1 {
+      font-weight: 700;
+      font-family: 'Times New Roman', Times;
+      -webkit-text-fill-color: white;
+      -webkit-text-stroke: .5px black;
+    }
+  } */
+
+h1 a {
+  color: white;
+  cursor: pointer;
+}
+
+.lr-group,
+.btn-group {
+  display: flex;
+  gap: 50px;
+}
+
+.lr-group img {
+  width: 30px;
+  height: 30px;
+}
+
+.lr-group div {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.lr-group button,
+.btn-group button,
+.btn-group select {
+  background: transparent;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.btn-group select option {
+  color: black;
+  cursor: pointer;
+  background: transparent;
+}
+
+.lr-group a {
+  color: white;
+}
+
+.search-input {
+  width: 50%;
+}
+
+.search-input input {
+  padding: 10px;
+  width: 100%;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  letter-spacing: 1px;
+  color: #000;
+}
+
+.profile a,
+.create-manga a,
+.login a,
+.register a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.profile img {
+  border-radius: 50%;
+}
+
+/* CONTEÚDO PRINCIPAL */
+
+main {
+  width: 100%;
+  height: 404px;
+}
+
+.card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  width: 50%;
+  height: 60%;
+  border-radius: 10px;
+
+  margin: auto;
+  display: flex;
+  align-items: center;
+}
+
+.left {
+  background-color: darkblue;
+  width: 50%;
+  height: 50%;
+  height: 100%;
+  text-align: center;
+  color: white;
+}
+
+.right {
+  background-color: #ffffff;
+  width: 50%;
+  padding: 20px;
+  height: 100%;
+}
+
+.avatar {
+  border-radius: 50%;
+  width: 150px;
+  margin: 20px;
+}
+
+.title {
+  font-size: 24px;
+}
+
+.info,
+.projects {
+  margin: 10px 0;
+}
+
+.info p,
+.projects p {
+  margin: 5px 0;
+}
+
+.info p:first-child,
+.projects p:first-child {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.text-gray {
+  color: rgba(0, 0, 0, 0.6);
+  border: none;
+}
+
+.recent,
+.most-viewed {
+  display: inline-block;
+  width: 45%;
+  vertical-align: top;
+}
+
+.social {
+  text-align: right;
+}
+
+.social a {
+  text-decoration: none;
+  font-size: 22px;
+  color: black;
+  margin: 5px;
+}
+
+.logo {
+  text-align: right;
+}
+
+.logo img {
+  width: 100px;
+}
+
+/* CARDS */
+
+.recent {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  justify-content: space-evenly;
+  max-height: 250px;
+  overflow: auto;
+}
+
+.card-manga {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-wrap: wrap;
+  width: 150px;
+  height: 150px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  overflow: hidden;
+  cursor: pointer;
+  background: darkblue;
+  font-size: 13px;
+}
+
+.card-img {
+  width: 70%;
+  overflow: hidden;
+  border-bottom: 1px solid #fff;
+  margin-top: 10px;
+}
+
+.card-img img {
+  width: 100%;
+  height: auto;
+}
+
+.card-content {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.card-content p {
+  color: #fff;
+}
+
+.transparent-p {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.transparent-p p {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* SEARCH */
+
+.search-input {
+  width: 50%;
+}
+
+.search-input input {
+  padding: 10px;
+  width: 100%;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  letter-spacing: 1px;
+  color: #000;
+}
+
+#search-results {
+  position: absolute;
+  transform: translate(0%, -4%);
+  width: 50%;
+  max-height: 200px;
+  overflow-y: auto;
+  background-color: #fff;
+  border-top: none;
+  border-radius: 0 0 5px 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+#search-results div {
+  padding: 10px;
+  cursor: pointer;
+}
+
+#search-results div:hover {
+  background-color: #f0f0f0;
+}
+
+#search-results a {
+  color: #333;
+  text-decoration: none;
+  min-width: 100%;
+}

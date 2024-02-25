@@ -1,0 +1,32 @@
+User
+- id_user (PK)
+- nome : varchar(50)
+- email : varchar(100)
+- img : longtext
+- dar_mode : varchar(1)
+
+Mangá
+- id_manga (PK)
+- autor (FK)
+- nome : varchar(150)
+- qntd_cap : int (4)
+- img : longtext
+
+Capítulo
+- cap (PK)
+- manga (FK)
+- content : longtext
+
+Favorito
+- user (FK)
+- manga (FK)
+
+Comentários Mangá
+- id_comments (PK)
+- manga (FK)
+- comments_manga : text
+
+Comentários Capítulo
+- id_comments (PK)
+- cap (FK)
+- comments_cap : text

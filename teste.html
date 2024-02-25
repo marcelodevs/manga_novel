@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="teste.css">
+  <title>MangáRealm • Teste</title>
+</head>
+
+<body>
+  <header>
+    <nav>
+      <h1><a href="./app/views/usuario/index.php">MangáRealm</a></h1>
+      <div class="search-input">
+        <input type="text" name="search" id="search" placeholder="Pesquisar por nome do mangá" autocomplete="off">
+        <div id="search-results"></div>
+      </div>
+      <div class="lr-group">
+        <div class="login">
+          <button type="button" class="in"><a href="./app/views/login.php"><img
+                src="./app/views/Icons/sign-in.png">Entre</a></button>
+        </div>
+        <div class="register">
+          <button type="button" class="up"><a href="../usuario/registrar.php"><img
+                src="./app/views/Icons/add-user.png">Inscreva-se</a></button>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main class="container">
+    <div class="image-manga">
+      <img src="./app/views/Icons/Yu.png">
+    </div>
+    <div class="content">
+      <div class="nome">
+        <p>Nome:</p>
+        <p>Jikan no Me</p>
+      </div>
+      <br>
+      <div class="nome-popular">
+        <p>Nome popular:</p>
+        <p>Jikan no Me</p>
+      </div>
+      <br>
+      <div class="genero">
+        <p>Gênero:</p>
+        <p>genero</p>
+      </div>
+      <br>
+      <div class="qntd-capitulos">
+        <p>Capítulos:</p>
+        <p>18</p>
+      </div>
+      <br>
+      <div class="comments" onclick="toggleCommentsTab()">
+        <abbr title="Ver comentários">
+          <p>Comentários <img src="./app/views/Icons/external-link.png" class="external-link" width="15" height="15">
+          </p>
+        </abbr>
+        <div class="comments-tab" onclick="stopPropagation(event)">
+          <div class="comments-group">
+            <p><img alt="f" width="20" height="20">Luck</p>
+            <span>Foda né man</span>
+            <p><img alt="f" width="20" height="20">Luck</p>
+            <span>Foda né man</span>
+            <p><img alt="f" width="20" height="20">Luck</p>
+            <span>Foda né man</span>
+            <p><img alt="f" width="20" height="20">Luck</p>
+            <span>Foda né man</span>
+            <p><img alt="f" width="20" height="20">Luck</p>
+            <span>Foda né man</span>
+            <p><img alt="f" width="20" height="20">Luck</p>
+            <span>Foda né man</span>
+          </div>
+          <hr style="border: 1px solid #fff;">
+          <form action="./app/controllers/comentarioController.php" method="post" class="send-message"
+            autocomplete="off">
+            <input type="text" name="comments_manga" placeholder="Comente">
+            <button type="submit">Enviar</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="show-cap">
+      <button class="toggle-capitulos">Mostrar capítulos</button>
+      <img src="./app/views/Icons/down.png" alt="">
+      <div class="capitulos">
+        <ul>
+          <li><a href="./app/views/capitulo/index.php?id=">Capítulo</a></li>
+        </ul>
+      </div>
+    </div>
+  </main>
+
+  <script src="./teste.js"></script>
+</body>
+
+</html>

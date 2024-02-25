@@ -1,0 +1,98 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+::selection {
+  background-color: #fff;
+  color: #00008b;
+}
+
+body {
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  background: url('../Icons/background.avif') no-repeat;
+  background-size: cover;
+  background-clip: border-box;
+}
+
+.container {
+  width: 15%;
+  background-color: darkblue;
+  border-radius: 10px;
+  padding: 50px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  color: white;
+}
+
+.form .profile {
+  width: 100px;
+  height: 100px;
+  user-select: none;
+  border: 5px solid #000;
+  border-radius: 50%;
+}
+
+.form .camera {
+  position: absolute;
+  top: 36%;
+  left: 60%;
+
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  background: #fff;
+  border-radius: 50%;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+}
+
+.form-group input {
+  border-radius: 10px;
+  outline: none;
+  padding: 6px;
+  border: none;
+  color: #000;
+  letter-spacing: 1px;
+}
+
+.form button {
+  font-size: 16px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  background: #fff;
+  color: #000;
+  border: 1px solid #fff;
+  transition: background .6s ease;
+
+  margin-top: 10px;
+  padding: 10px;
+  width: 100%;
+}
+
+.form button:hover {
+  background: transparent;
+  color: #fff;
+}

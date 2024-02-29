@@ -47,7 +47,7 @@ class ChapterModel extends Database
       $id_manga = isset($data['id_manga']) ? mysqli_real_escape_string($con, $data['id_manga']) : '';
       $id_chapter = isset($data['id_chapter']) ? mysqli_real_escape_string($con, $data['id_chapter']) : '';
 
-      $query = mysqli_query($con, "SELECT * FROM capitulo WHERE id_capitulo = " . (int)$id_chapter . " OR id_manga = " . (int)$id_manga . " ORDER BY id_capitulo ASC");
+      $query = mysqli_query($con, "SELECT * FROM capitulo WHERE id = " . (int)$id_chapter . " OR id_manga = " . (int)$id_manga . " ORDER BY id_capitulo ASC");
 
       if ($query) {
         $response = mysqli_fetch_all($query, MYSQLI_ASSOC);

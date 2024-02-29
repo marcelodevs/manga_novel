@@ -43,7 +43,7 @@ if (isset($_GET['manga'])) {
 
   $chapter = $obj_chapter->list_chapter(['id_manga' => $id_manga]);
 
-  $comments = $obj_comments->list_comments($id_manga);
+  $comments = $obj_comments->list_comments_manga($id_manga);
 
   // var_dump($chapter);
 } else {
@@ -172,7 +172,7 @@ if (isset($_GET['manga'])) {
         <?php if ($chapter['status']) : ?>
           <ul>
             <?php foreach ($chapter['data'] as $capitulo) : ?>
-              <li><a href="../capitulo/index.php?id=<?php echo $capitulo['id_capitulo'] ?>">Capítulo <?php echo $capitulo['id_capitulo'] ?></a></li>
+              <li><a href="../capitulo/index.php?id=<?php echo $capitulo['id'] ?>">Capítulo <?php echo $capitulo['id_capitulo'] ?></a></li>
             <?php endforeach; ?>
           </ul>
         <?php endif; ?>

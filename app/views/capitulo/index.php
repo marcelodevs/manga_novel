@@ -10,20 +10,35 @@ use NovelRealm\UserModel;
 use NovelRealm\ChapterModel;
 use NovelRealm\MangaModel;
 use NovelRealm\GenerosModel;
+use NovelRealm\CommentsModel;
 
 $obj_user = new UserModel;
 $obj_chapter = new ChapterModel;
 $obj_manga = new MangaModel;
 $obj_genres = new GenerosModel;
+$obj_comments = new CommentsModel;
 
 if (isset($_SESSION['login_user'])) {
   $user = $obj_user->list_user($_SESSION['login_user'])['data'];
 }
 
 if (isset($_GET['id'])) {
+
+  // var_dump($_GET);
+
   $id_chapter = $_GET['id'];
 
-  $chapter = $obj_chapter->list_chapter(['id_chapter' => $id_chapter])['data'][0];
+  $chapter = $obj_chapter->list_chapter(['id_chapter' => $id_chapter]);
+
+  // var_dump($chapter);
+
+
+  if (isset($chapter) && $chapter['status']) {
+    $chapter = $chapter['data'][0];
+    $comments = $obj_comments->list_comments_chapter($chapter['id']);
+  } else {
+    header("Location: ../usuario/index.php");
+  }
 
   $manga = $obj_manga->list_manga_id($chapter['id_manga'])['data'][0];
 
@@ -44,7 +59,7 @@ if (isset($_GET['id'])) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
   <link rel="shortcut icon" href="../Icons/book.png" type="image/x-icon">
-  <title>MangáRealm</title>
+  <title>MangáRealm • <?php echo $manga['nome'] ?> - Capítulo <?php echo $chapter['id_capitulo'] ?></title>
 </head>
 
 <body>
@@ -111,9 +126,43 @@ if (isset($_GET['id'])) {
       </div>
     </div>
     <div class="acoes">
-      <button><a href="./index.php?id=<?php echo ($chapter['id_capitulo'] - 1) ?>">Anterior</a></button>
-      <button><a href="../manga/index.php">Mangá</a></button>
-      <button><a href="./index.php?id=<?php echo ($chapter['id_capitulo'] + 1) ?>">Próximo</a></button>
+      <a href="./index.php?id=<?php echo ($chapter['id_capitulo'] - 1) ?>"><button>Anterior</button></a>
+      <a href="../manga/index.php"><button>Mangá</button></a>
+      <a href="./index.php?id=<?php echo ($chapter['id_capitulo'] + 1) ?>"><button>Próximo</button></a>
+    </div>
+    <div class="comentarios-container">
+      <h1>Comentários</h1>
+      <div class="public-comment">
+        <form action="../../controllers/comentarioCapituloController.php" method="post" class="send-message" autocomplete="off">
+          <input type="hidden" name="id_capitulo" value="<?php echo isset($_SESSION['login_user']) ? $chapter['id'] : '' ?>">
+          <input type="hidden" name="id_user" value="<?php echo isset($_SESSION['login_user']) ? $user['id_user'] : '' ?>">
+          <input type="text" name="comments_capitulo" placeholder="<?php echo isset($_SESSION['login_user']) ? 'Deixe seu comentário' : 'Faça o login para comentar' ?>" <?php echo isset($_SESSION['login_user']) ? '' : 'disabled' ?>>
+          <button type="submit" <?php echo isset($_SESSION['login_user']) ? '' : 'disabled' ?>>Enviar</button>
+        </form>
+      </div>
+      <hr>
+      <?php if ($comments['status']) { ?>
+        <?php
+        foreach ($comments['data'] as $comentarios) :
+          $user_comment = $obj_user->list_user(['id_user' => $comentarios['id_user']])['data'];
+        ?>
+          <div class="comments" id="comment_<?php echo $comentarios['id_comments']; ?>">
+            <div class="info-user">
+              <img src="data:image/*;base64,<?php echo $user_comment['img'] ?>" width="20" height="20">
+              <p><?php echo $user_comment['nome'] ?></p>
+            </div>
+            <p class="comment-text"><?php echo $comentarios['comments_capitulo']; ?></p>
+            <div class="actions">
+              <img src="../Icons/like.png" width="15" height="15" class="like-btn" data-comment-id="<?php echo $comentarios['id_comments']; ?>">
+              <span class="likes-count"><?php echo $comentarios['curtidas']; ?></span>
+              <p>Responder</p>
+            </div>
+            <br>
+          </div>
+        <?php endforeach; ?>
+      <?php } else { ?>
+        <p>Nenhum comentário adicionado, seja o primeiro a comentar!</p>
+      <?php } ?>
     </div>
   </main>
 
@@ -146,6 +195,24 @@ if (isset($_GET['id'])) {
         .catch(error => {
           console.error('Erro ao buscar mangás:', error);
         });
+    });
+
+    $(document).ready(function() {
+      $('.like-btn').click(function() {
+        var commentId = $(this).data('comment-id');
+        var likesCount = $(this).siblings('.likes-count');
+
+        $.ajax({
+          type: 'POST',
+          url: '../../controllers/curtidaComentarioController.php',
+          data: {
+            comment_id: commentId
+          },
+          success: function(newLikesCount) {
+            likesCount.text(newLikesCount);
+          }
+        });
+      });
     });
   </script>
 </body>

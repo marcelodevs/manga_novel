@@ -38,7 +38,7 @@ class CommentsModel extends Database
     }
   }
 
-  public function list_comments($data): array
+  public function list_comments_manga($data): array
   {
     $con = $this->con->connect();
 
@@ -86,12 +86,94 @@ class CommentsModel extends Database
     $id_user = mysqli_real_escape_string($con, $data['id_user']);
     $comments_capitulo = mysqli_real_escape_string($con, $data['comments_capitulo']);
 
-    $query = mysqli_query($con, "INSERT INTO comentarios_capitlo (id_capitulo, id_user, comments_capitulo) VALUES ('$id_capitulo', '$id_user', '$comments_capitulo')");
+    $query = mysqli_query($con, "INSERT INTO comentarios_capitulo (id_capitulo, id_user, comments_capitulo) VALUES ('$id_capitulo', '$id_user', '$comments_capitulo')");
 
     if ($query) {
       return true;
     } else {
       return false;
     }
+  }
+
+  public function list_comments_chapter($data): array
+  {
+    $con = $this->con->connect();
+
+    $id = mysqli_real_escape_string($con, $data);
+
+    $query = mysqli_query($con, "SELECT * FROM comentarios_capitulo WHERE id_capitulo = " . (int)$id);
+
+    if ($query) {
+      $response = array();
+      while ($row = mysqli_fetch_assoc($query)) {
+        $response[] = $row;
+      }
+
+      if (count($response) > 0) {
+        return [
+          "status" => true,
+          "data" => $response
+        ];
+      } else {
+        return [
+          "status" => false,
+          "data" => "Nenhum comentário existente no banco de dados"
+        ];
+      }
+    } else {
+      return [
+        "status" => false,
+        "data" => "Erro ao executar a consulta: " . mysqli_error($con)
+      ];
+    }
+  }
+
+  /**
+   * OUTROS MÉTODOS PARA COMENTÁRIOS DOS CAPÍTULOS
+   * 
+   * @author Marcelo
+   */
+
+  public function list_comments_chapter_id($data): array
+  {
+    $con = $this->con->connect();
+
+    $id = mysqli_real_escape_string($con, $data);
+
+    $query = mysqli_query($con, "SELECT * FROM comentarios_capitulo WHERE id_comments = " . (int)$id);
+
+    if ($query) {
+      $response = array();
+      while ($row = mysqli_fetch_assoc($query)) {
+        $response[] = $row;
+      }
+
+      if (count($response) > 0) {
+        return [
+          "status" => true,
+          "data" => $response
+        ];
+      } else {
+        return [
+          "status" => false,
+          "data" => "Nenhum comentário existente no banco de dados"
+        ];
+      }
+    } else {
+      return [
+        "status" => false,
+        "data" => "Erro ao executar a consulta: " . mysqli_error($con)
+      ];
+    }
+  }
+
+  public function update_like($data) {
+    $con = $this->con->connect();
+
+    $id_comments = mysqli_real_escape_string($con, $data['id_comments']);
+    
+    $list_comments = CommentsModel::list_comments_chapter_id($id_comments);
+
+    return $list_comments;
   }
 }

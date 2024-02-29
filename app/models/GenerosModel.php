@@ -51,21 +51,20 @@ class GenerosModel extends Database
   {
     $con = $this->con->connect();
 
+    // var_dump($data);
+
     $id_genre = mysqli_real_escape_string($con, $data);
 
-    $query = mysqli_query($con, "SELECT * FROM generos WHERE id_genero = " . (int)$id_genre . " OR genero_nome = '$data'");
+    $query = mysqli_query($con, "SELECT * FROM generos WHERE id_genero = " . (int)$id_genre . " OR genero_nome = '$id_genre'");
 
     if ($query) {
-      $response = array();
-      while ($row = mysqli_fetch_assoc($query)) {
-        $response[] = $row;
-      }
+      $response = mysqli_fetch_assoc($query);
 
       if (count($response) > 0) {
-        // var_dump($response[0]);
+        // var_dump($response);
         return [
           "status" => true,
-          "data" => $response[0]
+          "data" => $response
         ];
       } else {
         return [

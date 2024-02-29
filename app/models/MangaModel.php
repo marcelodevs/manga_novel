@@ -136,7 +136,10 @@ class MangaModel extends Database
         while ($row = mysqli_fetch_assoc($query)) {
           $row['generos'] = explode(', ', $row['generos']);
           $response[] = $row;
+          // var_dump($row);
         }
+
+        // var_dump($response);
 
         if (count($response) > 0) {
           return [

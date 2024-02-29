@@ -16,7 +16,7 @@ $obj_genres = new GenerosModel;
 
 if (isset($_SESSION['login_user'])) {
   $user = $obj_user->list_user($_SESSION['login_user'])['data'];
-  $mangas = $obj_manga->list_manga($user['id_user']);
+  $mangas = $obj_manga->list_manga(["id_user" => $user['id_user']]);
 
   $genero_manga = $obj_genres->list_genres()['data'];
 
@@ -39,7 +39,7 @@ if (isset($_SESSION['login_user'])) {
   <title>MangáRealm • Criar novo <?php if (isset($_GET['add'])) {
                                     if ($_GET['add'] == 'manga') {
                                       echo 'mangá';
-                                    } elseif ($_GET['add'] == 'capitulo') {
+                                    } elseif ($_GET['add'] == 'cap') {
                                       echo 'capítulo';
                                     }
                                   } ?></title>

@@ -28,6 +28,8 @@ $genero_manga = $obj_genres->list_genres();
 
 // var_dump($mangas);
 
+// var_dump($_GET);
+
 ?>
 
 <!DOCTYPE html>
@@ -80,27 +82,11 @@ $genero_manga = $obj_genres->list_genres();
           <button><a href="index.php">Página Inicial</a></button>
         <?php endif; ?>
         <?php if (!isset($_GET['authors'])) : ?>
-          <!-- <select id="category-select">
+          <select id="category-select">
             <option value="Tudo" <?php echo (!isset($_GET['category'])) ? 'selected' : '' ?>>Tudo</option>
-            <option value="Romance" <?php echo (isset($_GET['category']) and $_GET['category'] == 'Romance') ? 'selected' : '' ?>>Romance</option>
-            <option value="Drama" <?php echo (isset($_GET['category']) and $_GET['category'] == 'Drama') ? 'selected' : '' ?>>Drama</option>
-            <option value="Escolar" <?php echo (isset($_GET['category']) and $_GET['category'] == 'Escolar') ? 'selected' : '' ?>>Escolar</option>
-            <option value="Shounen" <?php echo (isset($_GET['category']) and $_GET['category'] == 'Shounen') ? 'selected' : '' ?>>Shounen</option>
-            <option value="Shoujo" <?php echo (isset($_GET['category']) and $_GET['category'] == 'Shoujo') ? 'selected' : '' ?>>Shoujo</option>
-            <option value="Yuri" <?php echo (isset($_GET['category']) and $_GET['category'] == 'Yuri') ? 'selected' : '' ?>>Yuri</option>
-            <option value="Yaoi" <?php echo (isset($_GET['category']) and $_GET['category'] == 'Yaoi') ? 'selected' : '' ?>>Yaoi</option>
-            <option value="Harém" <?php echo (isset($_GET['category']) and $_GET['category'] == 'Harém') ? 'selected' : '' ?>>Harém</option>
-            <option value="Hentai" <?php echo (isset($_GET['category']) and $_GET['category'] == 'Hentai') ? 'selected' : '' ?>>Hentai</option>
-            <option value="Mecha" <?php echo (isset($_GET['category']) and $_GET['category'] == 'Mecha') ? 'selected' : '' ?>>Mecha</option>
-            <option value="Seinen" <?php echo (isset($_GET['category']) and $_GET['category'] == 'Seinen') ? 'selected' : '' ?>>Seinen</option>
-            <option value="Ação" <?php echo (isset($_GET['category']) and $_GET['category'] == 'Ação') ? 'selected' : '' ?>>Ação</option>
-            <option value="Comédia" <?php echo (isset($_GET['category']) and $_GET['category'] == 'Comédia') ? 'selected' : '' ?>>Comédia</option>
-          </select> -->
-          <select class="category-select">
-            <option value="Tudo" <?php echo (!isset($_GET['category'])) ? 'selected' : '' ?>>Tudo</option>
-            <?php foreach ($genero_manga['data'] as $genero) { ?>
-              <option value="<?php echo $genero['genero_nome']; ?>" <?php echo (isset($_GET['category']) and $_GET['category'] == 'Romance') ? 'selected' : '' ?>><?php echo $genero['genero_nome'] ?></option>
-            <?php } ?>
+            <?php foreach ($genero_manga['data'] as $genero) : ?>
+              <option value="<?php echo $genero['genero_nome']; ?>" <?php echo (isset($_GET['category']) and $_GET['category'] == $genero['genero_nome']) ? 'selected' : '' ?>><?php echo $genero['genero_nome'] ?></option>
+            <?php endforeach; ?>
           </select>
         <?php endif; ?>
         <button><a href="?authors">Autores</a></button>
@@ -138,23 +124,35 @@ $genero_manga = $obj_genres->list_genres();
       <?php } ?>
       <!-- FILTRO -->
     <?php } else if (isset($_GET['category'])) {
-      $category = $_GET['category'];
-      $filteredMangas = array();
+      if (isset($_GET['category'])) {
+        $category = $_GET['category'];
+        $filteredMangas = array();
 
-      foreach ($mangas['data'] as $manga) {
-        $genres = explode(', ', $manga['generos']);
+        foreach ($mangas['data'] as $manga) {
+          $generos = $obj_genres->list_genres_manga($manga['id_manga'])['data'];
+          $generos_id = array_column($generos, 'id_genero');
 
-        if (in_array($category, $genres)) {
-          $filteredMangas[] = $manga;
+          $generosNomes = array();
+          for ($i = 0; $i < count($generos_id); $i++) {
+            $generosNomes[] = $obj_genres->list_genres_id($generos_id[$i])['data']['genero_nome'];
+          }
+
+          $generosNomes = array_unique($generosNomes); // Remove valores duplicados
+
+          if (in_array($category, $generosNomes)) {
+            $filteredMangas[] = $manga;
+          }
         }
+
+        $mangas['data'] = $filteredMangas;
       }
 
-      $mangas['data'] = $filteredMangas;
+      // var_dump($generos);
 
     ?>
       <?php if ($mangas['status'] and !empty($mangas['data'])) { ?>
         <?php foreach ($mangas['data'] as $manga) :
-          $chapter_count = $obj_chapter->list_chapter($manga['id_manga']); ?>
+          $chapter_count = $obj_chapter->list_chapter(["id_manga" => $manga['id_manga']]); ?>
           <!-- FILTRO -->
           <a href="../manga/index.php?manga=<?php echo $manga['id_manga']; ?>">
             <div class="card">
@@ -166,17 +164,16 @@ $genero_manga = $obj_genres->list_genres();
                 <div class="transparent-p">
                   <p>
                     <?php
-                    $genero_manga = $obj_genres->list_genres_manga($manga['id_manga'])['data'];
-                    $genero_array = array();
-                    foreach ($genero_manga as $genero) {
-                      $genero_array[] = ($obj_genres->list_genres_id($genero['id_genero'])['data']['genero_nome']);
-                      $implode_genero = implode(', ', $genero_array);
+                    $genero_array_filter = array();
+                    foreach ($generos as $genero) {
+                      $genero_array_filter[] = ($obj_genres->list_genres_id($genero['id_genero'])['data']['genero_nome']);
+                      $implode_genero_filter = implode(', ', $genero_array_filter);
                     }
-                    echo $implode_genero;
+                    echo $implode_genero_filter;
                     ?>
                   </p>
                   <p>Capítulos</p>
-                  <p><?php echo count($chapter_count['data']); ?></p>
+                  <p><?php echo $chapter_count['status'] ? count($chapter_count['data']) : 0 ?></p>
                 </div>
               </div>
             </div>

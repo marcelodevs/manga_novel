@@ -95,7 +95,7 @@ if (isset($_GET['id'])) {
   <main>
     <div class="manga">
       <div class="manga_nome">
-        <p>Jikan no Me</p>
+        <p><?php echo $manga['nome'] ?></p>
       </div>
       <br>
       <div class="numero_capitulo">

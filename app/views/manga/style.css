@@ -343,3 +343,20 @@ main.show-comments {
   text-decoration: none;
   min-width: 100%;
 }
+
+/* FAVORITO */
+
+.bookmark {
+  position: absolute;
+  top: -4%;
+  left: 96%;
+  z-index: 1000;
+}
+
+.bookmark img {
+  padding: 5px;
+  background: #fff;
+  border: 1px solid #000;
+  border-radius: 50%;
+  cursor: pointer;
+}

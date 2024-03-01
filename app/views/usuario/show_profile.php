@@ -9,10 +9,12 @@ require_once __DIR__ . '\..\..\..\autoload.php';
 use NovelRealm\UserModel;
 use NovelRealm\MangaModel;
 use NovelRealm\GenerosModel;
+use NovelRealm\BookmarkModel;
 
 $obj_user = new UserModel;
 $obj_manga = new MangaModel;
 $obj_genres = new GenerosModel;
+$obj_bookmark = new BookmarkModel;
 
 if (isset($_SESSION['login_user'])) {
   $user = $obj_user->list_user($_SESSION['login_user'])['data'];
@@ -20,6 +22,10 @@ if (isset($_SESSION['login_user'])) {
   $manga_user = $obj_manga->list_manga($user);
 
   $preferences_dark_mode = $obj_user->get_preferences_dark_mode($user['id_user']);
+
+  $favorito = $obj_bookmark->list_bookmark_user(["id_user" => $user['id_user']]);
+
+  // var_dump($favorito);
 } else {
   header("Location: ./index.php");
 }
@@ -98,37 +104,76 @@ if (isset($_SESSION['login_user'])) {
           <p>Email:</p>
           <p class="text-gray"><?php echo $user['email']; ?></p>
         </div>
+        <div class="bookmarks">
+          <p onclick="toggleBookmarksTab()">Favoritos <img src="../Icons/external-link-black.png" class="external-link" width="15" height="15"></p>
+          <div class="saves">
+            <?php if ($favorito['status']) { ?>
+              <div class="bookmarks-manga">
+                <?php foreach ($favorito['data'] as $fa) :
+                  $bookmark_manga = $obj_manga->list_manga_id($fa['id_manga'])['data'];
+                  foreach ($bookmark_manga as $manga) {
+                    $genero_manga = $obj_genres->list_genres_manga($manga['id_manga'])['data'];
+                    $genero_array = array();
+                    foreach ($genero_manga as $genero) {
+                      $genero_array[] = ($obj_genres->list_genres_id($genero['id_genero'])['data']['genero_nome']);
+                      $implode_genero = implode(', ', $genero_array);
+                    }
+                    echo "
+                    <a href='../manga/index.php?manga=" . $manga['id_manga'] . "'>
+                      <div class='card-manga'>
+                        <div class='card-content'>
+                          <p> " . $manga['nome'] . "</p>
+                          <div class='transparent-p'>
+                            <p> " . $implode_genero . "</p>
+                            <p>Capítulos</p>
+                            <p> " . $manga['quantidade_capitulo'] . "</p>
+                          </div>
+                        </div>
+                      </div>
+                    </a>
+                    ";
+                  }
+                ?>
+                <?php endforeach; ?>
+              </div>
+            <?php } else { ?>
+              <p><?php echo $favorito['data'] ?></p>
+            <?php } ?>
+          </div>
+        </div>
         <div class="projects">
-          <p>Mangás</p>
+          <p onclick="toggleMangaTab()">Mangás <img src="../Icons/external-link-black.png" class="external-link" width="15" height="15"></p>
           <div class="recent">
-            <?php
-            if ($manga_user['status']) {
-              foreach ($manga_user['data'] as $manga) {
-                $genero_manga = $obj_genres->list_genres_manga($manga['id_manga'])['data'];
-                $genero_array = array();
-                foreach ($genero_manga as $genero) {
-                  $genero_array[] = ($obj_genres->list_genres_id($genero['id_genero'])['data']['genero_nome']);
-                  $implode_genero = implode(', ', $genero_array);
-                }
-                echo "
-                <a href='../manga/edit_manga.php?manga=" . $manga['id_manga'] . "'>
-                  <div class='card-manga'>
-                    <div class='card-content'>
-                      <p> " . $manga['nome'] . "</p>
-                      <div class='transparent-p'>
-                        <p> " . $implode_genero . "</p>
-                        <p>Capítulos</p>
-                        <p> " . $manga['quantidade_capitulo'] . "</p>
+            <div class="manga-card-show">
+              <?php
+              if ($manga_user['status']) {
+                foreach ($manga_user['data'] as $manga) {
+                  $genero_manga = $obj_genres->list_genres_manga($manga['id_manga'])['data'];
+                  $genero_array = array();
+                  foreach ($genero_manga as $genero) {
+                    $genero_array[] = ($obj_genres->list_genres_id($genero['id_genero'])['data']['genero_nome']);
+                    $implode_genero = implode(', ', $genero_array);
+                  }
+                  echo "
+                  <a href='../manga/edit_manga.php?manga=" . $manga['id_manga'] . "'>
+                    <div class='card-manga'>
+                      <div class='card-content'>
+                        <p> " . $manga['nome'] . "</p>
+                        <div class='transparent-p'>
+                          <p> " . $implode_genero . "</p>
+                          <p>Capítulos</p>
+                          <p> " . $manga['quantidade_capitulo'] . "</p>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </a>
-                ";
+                  </a>
+                  ";
+                }
+              } else {
+                echo "<p class='transparent-p'>" . $manga_user['data'] . "</p>";
               }
-            } else {
-              echo "<p class='text-gray'>" . $manga_user['data'] . "</p>";
-            }
-            ?>
+              ?>
+            </div>
           </div>
         </div>
       </div>
@@ -165,6 +210,28 @@ if (isset($_SESSION['login_user'])) {
           console.error('Erro ao buscar mangás:', error);
         });
     });
+
+    function toggleBookmarksTab() {
+      var commentsTab = document.querySelector('.saves');
+      var main = document.querySelector('.card');
+      var link = document.querySelector('.bookmarks .external-link');
+
+      commentsTab.classList.toggle('show');
+      link.classList.toggle('show');
+      main.classList.toggle('show');
+    }
+
+    function toggleMangaTab() {
+      var commentsTab = document.querySelector('.recent');
+      var main = document.querySelector('.card');
+      var mangaCardShow = document.querySelector('.manga-card-show');
+      var link = document.querySelector('.projects .external-link');
+
+      commentsTab.classList.toggle('show');
+      link.classList.toggle('show');
+      mangaCardShow.classList.toggle('show');
+      main.classList.toggle('show');
+    }
   </script>
 </body>
 

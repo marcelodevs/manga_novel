@@ -45,7 +45,7 @@ if (isset($_GET['manga'])) {
 
   $chapter = $obj_chapter->list_chapter(['id_manga' => $id_manga]);
 
-  $comments = $obj_comments->list_comments($id_manga);
+  $comments = $obj_comments->list_comments_manga($id_manga);
 
   // var_dump($chapter);
 } else if (isset($_GET['edit'])) {
@@ -75,7 +75,7 @@ if (isset($_GET['manga'])) {
 
   $chapter = $obj_chapter->list_chapter(['id_manga' => $id_manga]);
 
-  $comments = $obj_comments->list_comments($id_manga);
+  $comments = $obj_comments->list_comments_manga($id_manga);
 } else {
   header("Location: ../usuario/index.php");
   // var_dump($_GET);

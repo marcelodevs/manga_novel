@@ -11,15 +11,22 @@ use NovelRealm\UserModel;
 use NovelRealm\ChapterModel;
 use NovelRealm\CommentsModel;
 use NovelRealm\GenerosModel;
+use NovelRealm\BookmarkModel;
 
 $obj_manga = new MangaModel;
 $obj_user = new UserModel;
 $obj_chapter = new ChapterModel;
 $obj_comments = new CommentsModel;
 $obj_genres = new GenerosModel;
+$obj_bookmark = new BookmarkModel;
 
 if (isset($_SESSION['login_user'])) {
   $user = $obj_user->list_user($_SESSION['login_user'])['data'];
+
+  $favorito = $obj_bookmark->validation_bookmarker([
+    "id_user" => $user['id_user'],
+    "id_manga" => $_GET['manga']
+  ]);
 }
 
 if (isset($_GET['manga'])) {
@@ -97,6 +104,13 @@ if (isset($_GET['manga'])) {
     <div class="image-manga">
       <img src="data:image/*;base64,<?php echo $manga['img'] ?>">
     </div>
+    <?php if (isset($_SESSION['login_user'])) : ?>
+      <div class="bookmark">
+        <a href="../../controllers/bookmarkController.php?id_user=<?php echo $user['id_user']; ?>&id_manga=<?php echo $id_manga ?>">
+          <img src="../Icons/bookmark-<?php echo ($favorito) ? 'true' : 'false' ?>.png" width="35" height="35">
+        </a>
+      </div>
+    <?php endif; ?>
     <div class="content">
       <div class="nome">
         <p>Nome:</p>

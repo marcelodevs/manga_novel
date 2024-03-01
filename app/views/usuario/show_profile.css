@@ -114,6 +114,7 @@ main {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  transition: all .3s ease;
 
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   width: 50%;
@@ -123,6 +124,10 @@ main {
   margin: auto;
   display: flex;
   align-items: center;
+}
+
+.card.show {
+  margin-left: -200px !important;
 }
 
 .left {
@@ -152,23 +157,24 @@ main {
 }
 
 .info,
-.projects {
+.projects,
+.bookmarks {
   margin: 10px 0;
 }
 
 .info p,
-.projects p {
+.projects p,
+.bookmarks p {
   margin: 5px 0;
 }
 
-.info p:first-child,
-.projects p:first-child {
+.info p:first-child {
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 }
 
 .text-gray {
   color: rgba(0, 0, 0, 0.6);
-  border: none;
+  border: none !important;
 }
 
 .recent,
@@ -199,18 +205,47 @@ main {
 
 /* CARDS */
 
-.recent {
+.projects p {
   display: flex;
-  flex-wrap: wrap;
-  width: 100%;
-  justify-content: space-evenly;
-  max-height: 250px;
-  overflow: auto;
+  align-items: center;
+  gap: 33px;
+  cursor: pointer;
+}
+
+.manga-card-show {
+  position: absolute;
+  top: 0%;
+  left: 98%;
+  width: 60%;
+  height: 360px !important;
+  border-bottom-right-radius: 10px;
+  border-top-right-radius: 10px;
+  background-color: darkblue;
+  color: white;
+  padding: 10px;
+  box-sizing: border-box;
+  transition: transform 0.3s ease;
+  transform-origin: left;
+  transform: scaleX(0);
+  z-index: 1;
+  overflow-y: auto;
+}
+
+.manga-card-show.show {
+  transform: scaleX(1);
+}
+
+.external-link {
+  transition: all .3s ease;
+}
+
+.external-link.show {
+  transform: rotate(180deg);
 }
 
 .card-manga {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
   width: 150px;
@@ -254,7 +289,7 @@ main {
 }
 
 .transparent-p p {
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.6);
 }
 
 /* SEARCH */
@@ -299,4 +334,54 @@ main {
   color: #333;
   text-decoration: none;
   min-width: 100%;
+}
+
+/* FAVORITO */
+
+.saves {
+  position: absolute;
+  top: 0%;
+  left: 98%;
+  width: 50%;
+  height: 404px !important;
+  border-bottom-right-radius: 10px;
+  border-top-right-radius: 10px;
+  background-color: darkblue;
+  color: white;
+  padding: 10px;
+  box-sizing: border-box;
+  transition: transform 0.3s ease;
+  transform-origin: left;
+  transform: scaleX(0);
+  z-index: 1;
+  overflow-y: auto;
+}
+
+.saves.show {
+  transform: scaleX(1);
+}
+
+.external-link.show {
+  transform: rotate(180deg);
+}
+
+.bookmarks p {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  cursor: pointer;
+}
+
+.bookmarks p:last-child {
+  color: rgba(255, 255, 255, .6);
+  border: none;
+}
+
+.bookmarks-manga {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  justify-content: space-evenly;
+  max-height: 250px;
+  overflow: auto;
 }

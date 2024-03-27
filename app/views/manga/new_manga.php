@@ -33,7 +33,7 @@ if (isset($_SESSION['login_user'])) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="new_manga.css">
+  <link rel="stylesheet" href="../src/styles/new_manga.css">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
   <link rel="shortcut icon" href="../Icons/book.png" type="image/x-icon">
   <title>MangáRealm • Criar novo <?php if (isset($_GET['add'])) {
@@ -150,7 +150,11 @@ if (isset($_SESSION['login_user'])) {
           <label for="content">Conteúdo</label>
           <textarea name="content" id="content" spellcheck="false" required></textarea>
         </div>
-        <button type="submit">Enviar</button>
+        <input type="hidden" name="id_user" value="<?php echo $user['id_user']; ?>">
+        <div class="btn-group">
+          <button type="submit" name="rascunho">Salvar Rascunho</button>
+          <button type="submit">Enviar</button>
+        </div>
       </form>
     <?php } ?>
   </main>

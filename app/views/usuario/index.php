@@ -18,6 +18,10 @@ $obj_genres = new GenerosModel;
 
 if (isset($_SESSION['login_user'])) {
   $user = $obj_user->list_user($_SESSION['login_user'])['data'];
+
+  $count_rascunho = $obj_chapter->return_sketch($user['id_user']);
+
+  // var_dump($count_rascunho);
 }
 
 $authors = $obj_user->list_user()['data'];
@@ -38,7 +42,7 @@ $genero_manga = $obj_genres->list_genres();
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="../src/styles/usuario.css">
   <link rel="shortcut icon" href="../Icons/book.png" type="image/x-icon">
   <title>MangáRealm <?php if (isset($_GET['authors'])) {
                       echo "• Autores";
@@ -61,7 +65,14 @@ $genero_manga = $obj_genres->list_genres();
             <button type="button"><a href="../manga/new_manga.php"><img src="../Icons/create.png">Criar</a></button>
           </div>
           <div class="profile">
-            <a href="./show_profile.php"><img src="data:image/*;base64,<?php echo $user['img'] ?>"><?php echo $user['nome'] ?></a>
+            <a href="./show_profile.php"><img src="data:image/*;base64,<?php echo $user['img'] ?>">
+              <?php if ($count_rascunho['status']) : ?>
+                <abbr title="<?php echo count($count_rascunho['data']); ?> rascunhos">
+                  <p class="count-rascunho"><?php echo count($count_rascunho['data']); ?></p>
+                </abbr>
+              <?php endif; ?>
+              <?php echo $user['nome'] ?>
+            </a>
           </div>
         </div>
       <?php } else { ?>
@@ -221,7 +232,7 @@ $genero_manga = $obj_genres->list_genres();
     <?php } ?>
   </main>
 
-  <script src="./script.js"></script>
+  <script src="../src/scripts/script.js"></script>
 </body>
 
 </html>

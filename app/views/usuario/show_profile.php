@@ -10,11 +10,13 @@ use NovelRealm\UserModel;
 use NovelRealm\MangaModel;
 use NovelRealm\GenerosModel;
 use NovelRealm\BookmarkModel;
+use NovelRealm\ChapterModel;
 
 $obj_user = new UserModel;
 $obj_manga = new MangaModel;
 $obj_genres = new GenerosModel;
 $obj_bookmark = new BookmarkModel;
+$obj_chapter = new ChapterModel;
 
 if (isset($_SESSION['login_user'])) {
   $user = $obj_user->list_user($_SESSION['login_user'])['data'];
@@ -25,7 +27,9 @@ if (isset($_SESSION['login_user'])) {
 
   $favorito = $obj_bookmark->list_bookmark_user(["id_user" => $user['id_user']]);
 
-  // var_dump($favorito);
+  $count_rascunho = $obj_chapter->return_sketch($user['id_user']);
+
+  // var_dump($count_rascunho);
 } else {
   header("Location: ./index.php");
 }
@@ -40,7 +44,7 @@ if (isset($_SESSION['login_user'])) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="show_profile.css">
+  <link rel="stylesheet" href="../src/styles/show_profile.css">
   <link rel="shortcut icon" href="../Icons/book.png" type="image/x-icon">
   <title>MangáRealm • <?php echo $user['nome'] ?></title>
 </head>
@@ -176,63 +180,39 @@ if (isset($_SESSION['login_user'])) {
             </div>
           </div>
         </div>
+        <?php if ($count_rascunho['status']) : ?>
+          <div class="rascunhos">
+            <p onclick="toggleRascunhosTab()">Rascunhos <img src="../Icons/external-link-black.png" class="external-link" width="15" height="15"></p>
+            <div class="saves">
+              <div class="rascunhos-manga">
+                <?php foreach ($count_rascunho['data'] as $rascunho) {
+                  $rascunho_manga = $obj_manga->list_manga_id($rascunho['id_manga'])['data'];
+                  foreach ($rascunho_manga as $manga) {
+                    echo "
+                    <a href='../capitulo/edit_cap.php?cap=" . $rascunho['id'] . "'>
+                      <div class='card-manga'>
+                        <div class='card-content'>
+                          <p> " . $manga['nome'] . "</p>
+                          <div class='transparent-p'>
+                            <p>Capítulo:</p>
+                            <p> " . $rascunho['id_capitulo'] . "</p>
+                          </div>
+                        </div>
+                      </div>
+                    </a>
+                    ";
+                  }
+                }
+                ?>
+              </div>
+            </div>
+          </div>
+        <?php endif; ?>
       </div>
     </div>
   </main>
 
-  <script>
-    const searchInput = document.getElementById('search');
-    const searchResults = document.getElementById('search-results');
-
-    searchInput.addEventListener('keyup', function() {
-      const searchText = this.value.trim();
-
-      if (searchText === '') {
-        searchResults.innerHTML = '';
-        return;
-      }
-
-      fetch(`http://localhost/dashboard/NovelRealm/app/controllers/searchController.php?search=${searchText}`)
-        .then(response => response.json())
-        .then(data => {
-          if (data.status) {
-            let html = '';
-            data.data.forEach(manga => {
-              console.log(manga);
-              html += `<div><a href="../manga/index.php?manga=${manga.id_manga}">${manga.nome}</a></div>`;
-            });
-            searchResults.innerHTML = html;
-          } else {
-            searchResults.innerHTML = '<div>Nenhum mangá encontrado</div>';
-          }
-        })
-        .catch(error => {
-          console.error('Erro ao buscar mangás:', error);
-        });
-    });
-
-    function toggleBookmarksTab() {
-      var commentsTab = document.querySelector('.saves');
-      var main = document.querySelector('.card');
-      var link = document.querySelector('.bookmarks .external-link');
-
-      commentsTab.classList.toggle('show');
-      link.classList.toggle('show');
-      main.classList.toggle('show');
-    }
-
-    function toggleMangaTab() {
-      var commentsTab = document.querySelector('.recent');
-      var main = document.querySelector('.card');
-      var mangaCardShow = document.querySelector('.manga-card-show');
-      var link = document.querySelector('.projects .external-link');
-
-      commentsTab.classList.toggle('show');
-      link.classList.toggle('show');
-      mangaCardShow.classList.toggle('show');
-      main.classList.toggle('show');
-    }
-  </script>
+  <script src="../src/scripts/show_profile.js"></script>
 </body>
 
 </html>

@@ -10,7 +10,7 @@
 
 body {
   font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-  background: url('../Icons/background.avif') no-repeat;
+  background: url('../../Icons/background.avif') no-repeat;
   background-size: cover;
   background-clip: border-box;
 }

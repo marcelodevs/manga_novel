@@ -1,0 +1,81 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+::selection {
+  background-color: #fff;
+  color: #00008b;
+}
+
+@media screen and (max-width: 1000px) {
+
+  body {
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    background: url('../../../Icons/wallpaper-responsive.jpg') no-repeat;
+    background-size: cover;
+    background-clip: border-box;
+  }
+
+  .container {
+    width: 30%;
+    background-color: darkblue;
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    color: white;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+  }
+
+  .form-group input {
+    border-radius: 10px;
+    outline: none;
+    padding: 6px;
+    border: none;
+    color: #000;
+    letter-spacing: 1px;
+  }
+
+  .form button {
+    font-size: 16px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    background: #fff;
+    color: #000;
+    border: 1px solid #fff;
+    transition: background .6s ease;
+
+    margin-top: 10px;
+    padding: 10px;
+    width: 100%;
+  }
+
+  .form button:hover {
+    background: transparent;
+    color: #fff;
+  }
+}

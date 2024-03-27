@@ -10,7 +10,7 @@
 
 body {
   font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-  background: url('../Icons/background.avif') no-repeat;
+  background: url('../../Icons/background.avif') no-repeat;
   background-size: cover;
   background-clip: border-box;
 }
@@ -52,7 +52,7 @@ body {
 
 .form .camera {
   position: absolute;
-  top: 36%;
+  top: 32%;
   left: 60%;
 
   width: 30px;

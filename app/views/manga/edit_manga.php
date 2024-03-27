@@ -89,7 +89,7 @@ if (isset($_GET['manga'])) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="edit_manga.css">
+  <link rel="stylesheet" href="../src/styles/edit_manga.css">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
   <link rel="shortcut icon" href="../Icons/book.png" type="image/x-icon">
   <title>MangáRealm • Editar <?php echo $manga['nome'] ?></title>

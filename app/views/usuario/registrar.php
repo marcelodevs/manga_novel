@@ -4,7 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="./registrar.css">
+  <link rel="stylesheet" href="../src/styles/registrar.css">
+  <link rel="stylesheet" href="../src/styles/medias_querys/registrar.css">
   <link rel="shortcut icon" href="../Icons/book.png" type="image/x-icon">
   <title>MangáRealm • Cadastro</title>
 </head>
@@ -19,15 +20,15 @@
         <input type="file" id="photoInput" accept="image/*" style="display: none;" name="img_profile">
       </div>
       <div class="form-group">
-        <label for="username">Usuário</label>
+        <label for="username" class="label">Usuário</label>
         <input type="text" id="username" name="username" required>
       </div>
       <div class="form-group">
-        <label for="email">E-mail</label>
+        <label for="email" class="label">E-mail</label>
         <input type="email" id="email" name="email" required>
       </div>
       <div class="form-group">
-        <label for="password">Senha</label>
+        <label for="password" class="label">Senha</label>
         <input type="password" id="password" name="password" minlength="8" maxlength="10" pattern="[A-Za-z0-9!@.]*" title="A senha deve possuir no mínimo 5 caracteres e não pode conter aspas, espaços e o caracter +" required>
       </div>
       <button type="submit">Cadastrar</button>

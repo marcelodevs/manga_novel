@@ -22,16 +22,15 @@ if (isset($_SESSION['login_user'])) {
   $user = $obj_user->list_user($_SESSION['login_user'])['data'];
 }
 
-if (isset($_GET['id'])) {
+if (isset($_GET['cap'])) {
 
   // var_dump($_GET);
 
-  $id_chapter = $_GET['id'];
+  $id_chapter = $_GET['cap'];
 
-  $chapter = $obj_chapter->list_chapter(['id_chapter' => $id_chapter]);
+  $chapter = $obj_chapter->return_sketch($id_chapter);
 
   // var_dump($chapter);
-
 
   if (isset($chapter) && $chapter['status']) {
     $chapter = $chapter['data'][0];
@@ -45,6 +44,26 @@ if (isset($_GET['id'])) {
   $genero_manga = $obj_genres->list_genres_manga($manga['id_manga'])['data'];
 
   // var_dump($generos);
+} else if (isset($_GET['edit'])) {
+
+  // var_dump($_GET);
+
+  $id_chapter = $_GET['edit'];
+
+  $chapter = $obj_chapter->return_sketch($id_chapter);
+
+  // var_dump($chapter);
+
+  if (isset($chapter) && $chapter['status']) {
+    $chapter = $chapter['data'][0];
+    $comments = $obj_comments->list_comments_chapter($chapter['id']);
+  } else {
+    header("Location: ../usuario/index.php");
+  }
+
+  $manga = $obj_manga->list_manga_id($chapter['id_manga'])['data'][0];
+
+  $genero_manga = $obj_genres->list_genres_manga($manga['id_manga'])['data'];
 } else {
   header("Location: ../usuario/index.php");
 }
@@ -57,7 +76,7 @@ if (isset($_GET['id'])) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="../src/styles/capitulo.css">
+  <link rel="stylesheet" href="../src/styles/edit_cap.css">
   <link rel="shortcut icon" href="../Icons/book.png" type="image/x-icon">
   <title>MangáRealm • <?php echo $manga['nome'] ?> - Capítulo <?php echo $chapter['id_capitulo'] ?></title>
 </head>
@@ -90,6 +109,7 @@ if (isset($_GET['id'])) {
         </div>
       <?php } ?>
     </nav>
+    <hr>
     <nav>
       <div class="btn-group">
         <p>Gêneros: </p>
@@ -108,31 +128,71 @@ if (isset($_GET['id'])) {
   </header>
 
   <main>
-    <div class="manga">
-      <div class="manga_nome">
-        <p><?php echo $manga['nome'] ?></p>
+    <!-- EDITAR CAPÍTULO -->
+    <?php if (isset($_GET['edit'])) : ?>
+      <form method="post" id="form-update" autocomplete="off" class="manga">
+        <input type="hidden" name="id_ras" class="id_ras" value="<?php echo $chapter['id'] ?>">
+        <div class="manga_nome">
+          <p><?php echo $manga['nome'] ?></p>
+        </div>
+        <br>
+        <div class="numero_capitulo">
+          <p>Capítulo:</p>
+          <input type="number" value="<?php echo $chapter['id_capitulo'] ?>" name="id_capitulo">
+        </div>
+        <br>
+        <div class="title">
+          <p>Título:</p>
+          <input type="text" value="<?php echo $chapter['title'] ?>" name="title">
+        </div>
+        <br>
+        <div class="content">
+          <textarea style="white-space: pre-wrap;" name="content"><?php echo $chapter['content'] ?></textarea>
+        </div>
+      </form>
+      <div class="acoes">
+        <button type="submit" form="form-update" formaction="../../controllers/novoCapituloController.php" style="display: flex; align-items: center; gap: 10px;">
+          <img src="../Icons/save-update.png" width="15" height="15">
+          Salvar como <br> rascunho
+        </button>
+        <abbr title="Ao salvar como definitivo, você não poderá mais atualizar o capítulo!">
+          <button class="salvar-definitivo" type="submit" form="form-update" formaction="../../controllers/updateCapituloController.php" style="display: flex; align-items: center; gap: 10px;">
+            <img src="../Icons/save-update.png" width="15" height="15">
+            Salvar como <br> definitivo
+          </button>
+        </abbr>
+        <button type="delete" form="form-update" formaction="../../controllers/deleteCapituloController.php" style="display: flex; align-items: center; gap: 10px;">
+          <img src="../Icons/delte.png" width="15" height="15">
+          Excluir
+        </button>
       </div>
-      <br>
-      <div class="numero_capitulo">
-        <p>Capítulo <?php echo $chapter['id_capitulo'] ?></p>
+      <!-- VISUALIZAR CAPÍTULO -->
+    <?php elseif (isset($_GET['cap'])) : ?>
+      <div class="manga">
+        <div class="manga_nome">
+          <p><?php echo $manga['nome'] ?></p>
+        </div>
+        <br>
+        <div class="numero_capitulo">
+          <p>Capítulo <?php echo $chapter['id_capitulo'] ?></p>
+        </div>
+        <br>
+        <div class="title">
+          <p><?php echo $chapter['title'] ?></p>
+        </div>
+        <br>
+        <div class="content">
+          <pre style="white-space: pre-wrap;"><?php echo $chapter['content'] ?></pre>
+        </div>
       </div>
-      <br>
-      <div class="title">
-        <p><?php echo $chapter['title'] ?></p>
+      <div class="acoes">
+        <a href="?edit=<?php echo $chapter['id'] ?>">
+          <button type="button" style="display: flex; align-items: center; gap: 10px">
+            <img src="../Icons/edit.png" width="15" height="15"> Editar
+          </button>
+        </a>
       </div>
-      <br>
-      <div class="content">
-        <pre style="white-space: pre-wrap;"><?php echo $chapter['content'] ?></pre>
-      </div>
-    </div>
-    <!-- PRECISA AJEITAR A ORDEM DOS CAPÍTULOS -->
-    <div class="acoes">
-      <a href="./index.php?id=<?php //while ($chapter['id_manga'] == $manga['id_manga']) echo ($chapter['id'] - 1) 
-                              ?>"><button>Anterior</button></a>
-      <a href="../manga/index.php"><button>Mangá</button></a>
-      <a href="./index.php?id=<?php //while ($chapter['id_manga'] == $manga['id_manga']) echo ($chapter['id'] + 1) 
-                              ?>"><button>Próximo</button></a>
-    </div>
+    <?php endif; ?>
     <div class="comentarios-container">
       <h1>Comentários</h1>
       <div class="public-comment">
@@ -144,7 +204,7 @@ if (isset($_GET['id'])) {
         </form>
       </div>
       <hr>
-      <?php if ($comments['status']) { ?>
+      <?php if ($comments['status']) : ?>
         <?php
         foreach ($comments['data'] as $comentarios) :
           $user_comment = $obj_user->list_user(['id_user' => $comentarios['id_user']])['data'];
@@ -163,12 +223,13 @@ if (isset($_GET['id'])) {
             <br>
           </div>
         <?php endforeach; ?>
-      <?php } else { ?>
+      <?php else : ?>
         <p>Nenhum comentário adicionado, seja o primeiro a comentar!</p>
-      <?php } ?>
+      <?php endif; ?>
     </div>
   </main>
 
+  <script src="../src/scripts/jquery-3.7.1.min.js"></script>
   <script>
     const searchInput = document.getElementById('search');
     const searchResults = document.getElementById('search-results');
@@ -216,6 +277,41 @@ if (isset($_GET['id'])) {
           }
         });
       });
+      // <?php if (isset($_GET['edit'])) : ?>
+      //   $('.salvar-definitivo').click(function(e) {
+
+      //     e.preventDefault();
+
+      //     var confirm = window.confirm("Tem certeza que deseja salvar como definitivo?\nVocê não poderá mais editá-lo!");
+
+      //     if (confirm) {
+      //       var id_ras = $(this).data('id_ras');
+      //       var id_capitulo = $(this).data('id_capitulo');
+      //       var title = $(this).data('title');
+      //       var content = $(this).data('content');
+
+      //       console.log("Passou do confirm");
+
+      //       $.ajax({
+      //         type: 'POST',
+      //         url: 'http://localhost/dashboard/NovelRealm/app/controllers/updateCapituloController.php',
+      //         data: {
+      //           id: id_ras,
+      //           id_capitulo: id_capitulo,
+      //           title: title,
+      //           content: content,
+      //           rascunho: "N",
+      //         },
+      //         success: function(data) {
+      //           console.log(data);
+      //           window.location.href = "?cap=" + data['id'];
+      //         }
+      //       });
+      //     } else {
+      //       console.log("Cancelado com sucesso :)");
+      //     }
+      //   });
+      // <?php endif; ?>
     });
   </script>
 </body>

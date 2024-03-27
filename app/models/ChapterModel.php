@@ -27,10 +27,12 @@ class ChapterModel extends Database
 
     $id_capitulo = mysqli_real_escape_string($con, $data['id_capitulo']);
     $id_manga = mysqli_real_escape_string($con, $data['id_manga']);
+    $id_user = mysqli_real_escape_string($con, $data['id_user']);
     $title = mysqli_real_escape_string($con, $data['title']);
     $content = mysqli_real_escape_string($con, $data['content']);
+    $rascunho = mysqli_real_escape_string($con, $data['rascunho']);
 
-    $query = mysqli_query($con, "INSERT INTO capitulo (id_capitulo, id_manga, title, content) VALUES ('$id_capitulo', '$id_manga', '$title', '$content')");
+    $query = mysqli_query($con, "INSERT INTO capitulo (id_capitulo, id_manga, title, content, rascunho) VALUES ('$id_capitulo', '$id_manga', '$title', '$content', '$rascunho')");
 
     if ($query) {
       return true;
@@ -47,7 +49,7 @@ class ChapterModel extends Database
       $id_manga = isset($data['id_manga']) ? mysqli_real_escape_string($con, $data['id_manga']) : '';
       $id_chapter = isset($data['id_chapter']) ? mysqli_real_escape_string($con, $data['id_chapter']) : '';
 
-      $query = mysqli_query($con, "SELECT * FROM capitulo WHERE id = " . (int)$id_chapter . " OR id_manga = " . (int)$id_manga . " ORDER BY id_capitulo ASC");
+      $query = mysqli_query($con, "SELECT * FROM capitulo WHERE (id = " . (int)$id_chapter . " AND rascunho = 'N') OR (id_manga = " . (int)$id_manga . " AND rascunho = 'N') ORDER BY id_capitulo ASC");
 
       if ($query) {
         $response = mysqli_fetch_all($query, MYSQLI_ASSOC);
@@ -61,7 +63,7 @@ class ChapterModel extends Database
         return ["status" => false, "data" => "Erro ao executar a consulta: " . mysqli_error($con)];
       }
     } else {
-      $query = mysqli_query($con, "SELECT * FROM capitulo ORDER BY id_capitulo ASC");
+      $query = mysqli_query($con, "SELECT * FROM capitulo WHERE rascunho = 'N' ORDER BY id_capitulo ASC");
 
       if ($query) {
         $response = array();
@@ -77,6 +79,65 @@ class ChapterModel extends Database
       } else {
         return ["status" => false, "data" => "Erro ao executar a consulta: " . mysqli_error($con)];
       }
+    }
+  }
+
+  /**
+   * MÉTODO PARA RETORNAR OS CAPÍTULOS SALVOS NO RASCUNHO
+   * 
+   * @author Marcelo
+   */
+
+  public function return_sketch($data): array
+  {
+    $con = $this->con->connect();
+
+    $id_author = mysqli_real_escape_string($con, $data);
+
+    $query = mysqli_query($con, "SELECT * FROM capitulo WHERE (id_usuario = " . (int)$id_author . " AND rascunho = 'S') OR (id = " . (int)$id_author . " AND rascunho = 'S')");
+
+    if ($query) {
+      $response = array();
+      while ($row = mysqli_fetch_assoc($query)) {
+        $response[] = $row;
+      }
+
+      if (count($response) > 0) {
+        return [
+          "status" => true,
+          "data" => $response
+        ];
+      } else {
+        return [
+          "status" => false,
+          "data" => "Nenhum rascunho existente no banco de dados"
+        ];
+      }
+    }
+  }
+
+  /**
+   * MÉTODO PARA ATUALIZAR RASCUNHO
+   * 
+   * @author Marcelo
+   */
+
+  public function update_sketch($data): bool
+  {
+    $con = $this->con->connect();
+
+    $id = mysqli_real_escape_string($con, $data['id']);
+    $id_capitulo = mysqli_real_escape_string($con, $data['id_capitulo']);
+    $title = mysqli_real_escape_string($con, $data['title']);
+    $content = mysqli_real_escape_string($con, $data['content']);
+    $rascunho = mysqli_real_escape_string($con, $data['rascunho']);
+
+    $query = mysqli_query($con, "UPDATE capitulo SET id_capitulo = '$id_capitulo', title = '$title', content = '$content', rascunho = '$rascunho' WHERE id = '$id'");
+
+    if ($query) {
+      return true;
+    } else {
+      return false;
     }
   }
 }

@@ -47,9 +47,10 @@ class ChapterModel extends Database
 
     if (!is_null($data) && is_array($data)) {
       $id_manga = isset($data['id_manga']) ? mysqli_real_escape_string($con, $data['id_manga']) : '';
-      $id_chapter = isset($data['id_chapter']) ? mysqli_real_escape_string($con, $data['id_chapter']) : '';
+      $id_chapter = isset($data['id']) ? mysqli_real_escape_string($con, $data['id']) : '';
+      $chapter = isset($data['chapter']) ? mysqli_real_escape_string($con, $data['chapter']) : '';
 
-      $query = mysqli_query($con, "SELECT * FROM capitulo WHERE (id = " . (int)$id_chapter . " AND rascunho = 'N') OR (id_manga = " . (int)$id_manga . " AND rascunho = 'N') ORDER BY id_capitulo ASC");
+      $query = mysqli_query($con, "SELECT * FROM capitulo WHERE (id = " . (int)$id_chapter . " AND rascunho = 'N') OR (id_manga = " . (int)$id_manga . " AND rascunho = 'N') OR (id_manga = " . (int)$id_manga . " AND id_capitulo = '$chapter') ORDER BY id_capitulo ASC");
 
       if ($query) {
         $response = mysqli_fetch_all($query, MYSQLI_ASSOC);
@@ -138,6 +139,62 @@ class ChapterModel extends Database
       return true;
     } else {
       return false;
+    }
+  }
+
+  public function list_chapter_id($data): array
+  {
+    $con = $this->con->connect();
+    $id_manga = isset($data['id_manga']) ? mysqli_real_escape_string($con, $data['id_manga']) : '';
+    $chapter = isset($data['chapter']) ? mysqli_real_escape_string($con, $data['chapter']) : '';
+
+    $query = mysqli_query($con, "SELECT * FROM capitulo WHERE id_manga = " . (int)$id_manga . " AND id_capitulo = '$chapter' AND rascunho = 'N' ORDER BY id_capitulo ASC");
+
+    if ($query) {
+      $response = mysqli_fetch_all($query, MYSQLI_ASSOC);
+
+      if (count($response) > 0) {
+        return ["status" => true, "data" => $response];
+      } else {
+        return ["status" => false, "data" => "Nenhum capítulo encontrado"];
+      }
+    } else {
+      return ["status" => false, "data" => "Erro ao executar a consulta: " . mysqli_error($con)];
+    }
+  }
+
+  /**
+   * MÉTODO PARA PASSAR OU VOLTAR OS CAPÍTULOS
+   * 
+   * @author Marcelo
+   */
+
+  public function validation_chapter($cap, $manga, $action)
+  {
+    $manga_validation = ChapterModel::list_chapter(['id_manga' => $manga]);
+    $res = null;
+
+
+    if ($action == "pro") {
+      foreach ($manga_validation['data'] as $validation) {
+        // var_dump($validation);
+        if ($cap + 1 == $validation['id_capitulo'] && $validation['id_manga'] == $manga) {
+          $res = $cap + 1;
+          break;
+        }
+      }
+    } elseif ($action == "ant") {
+      foreach ($manga_validation['data'] as $validation) {
+        if ($cap - 1 == $validation['id_capitulo'] && $validation['id_manga'] == $manga) {
+          $res = $cap - 1;
+          break;
+        }
+      }
+    }
+
+    if ($res != null) {
+      $handle_chapter = ChapterModel::list_chapter_id(['chapter' => $res, 'id_manga' => $manga]);
+      return $handle_chapter['data'][0]['id'];
     }
   }
 }

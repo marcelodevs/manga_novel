@@ -28,16 +28,15 @@ if (isset($_GET['id'])) {
 
   $id_chapter = $_GET['id'];
 
-  $chapter = $obj_chapter->list_chapter(['id_chapter' => $id_chapter]);
+  $chapter = $obj_chapter->list_chapter(['id' => $id_chapter]);
 
   // var_dump($chapter);
-
 
   if (isset($chapter) && $chapter['status']) {
     $chapter = $chapter['data'][0];
     $comments = $obj_comments->list_comments_chapter($chapter['id']);
   } else {
-    header("Location: ../usuario/index.php");
+    header("Location: ../../../404.php?type=cap&error=2");
   }
 
   $manga = $obj_manga->list_manga_id($chapter['id_manga'])['data'][0];
@@ -46,8 +45,12 @@ if (isset($_GET['id'])) {
 
   // var_dump($generos);
 } else {
-  header("Location: ../usuario/index.php");
+  header("Location: ../../../404.php?type=cap&error=1");
 }
+
+// var_dump($chapter['id_capitulo'], $manga['id_manga']);
+
+// var_dump($obj_chapter->validation_chapter($chapter['id_capitulo'], $manga['id_manga'], 'pro'));
 
 ?>
 
@@ -127,11 +130,9 @@ if (isset($_GET['id'])) {
     </div>
     <!-- PRECISA AJEITAR A ORDEM DOS CAPÍTULOS -->
     <div class="acoes">
-      <a href="./index.php?id=<?php //while ($chapter['id_manga'] == $manga['id_manga']) echo ($chapter['id'] - 1) 
-                              ?>"><button>Anterior</button></a>
+      <a href="./index.php?id=<?php echo $obj_chapter->validation_chapter($chapter['id_capitulo'], $manga['id_manga'], 'ant'); ?>"><button>Anterior</button></a>
       <a href="../manga/index.php"><button>Mangá</button></a>
-      <a href="./index.php?id=<?php //while ($chapter['id_manga'] == $manga['id_manga']) echo ($chapter['id'] + 1) 
-                              ?>"><button>Próximo</button></a>
+      <a href="./index.php?id=<?php echo $obj_chapter->validation_chapter($chapter['id_capitulo'], $manga['id_manga'], 'pro'); ?>"><button>Próximo</button></a>
     </div>
     <div class="comentarios-container">
       <h1>Comentários</h1>

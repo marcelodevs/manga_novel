@@ -36,7 +36,7 @@ if (isset($_GET['cap'])) {
     $chapter = $chapter['data'][0];
     $comments = $obj_comments->list_comments_chapter($chapter['id']);
   } else {
-    header("Location: ../usuario/index.php");
+    header("Location: ../../../404.php?type=cap&error=2");
   }
 
   $manga = $obj_manga->list_manga_id($chapter['id_manga'])['data'][0];
@@ -58,14 +58,14 @@ if (isset($_GET['cap'])) {
     $chapter = $chapter['data'][0];
     $comments = $obj_comments->list_comments_chapter($chapter['id']);
   } else {
-    header("Location: ../usuario/index.php");
+    header("Location: ../../../404.php?type=cap&error=2");
   }
 
   $manga = $obj_manga->list_manga_id($chapter['id_manga'])['data'][0];
 
   $genero_manga = $obj_genres->list_genres_manga($manga['id_manga'])['data'];
 } else {
-  header("Location: ../usuario/index.php");
+  header("Location: ../../../404.php?type=cap&error=1");
 }
 
 ?>
@@ -277,41 +277,6 @@ if (isset($_GET['cap'])) {
           }
         });
       });
-      // <?php if (isset($_GET['edit'])) : ?>
-      //   $('.salvar-definitivo').click(function(e) {
-
-      //     e.preventDefault();
-
-      //     var confirm = window.confirm("Tem certeza que deseja salvar como definitivo?\nVocê não poderá mais editá-lo!");
-
-      //     if (confirm) {
-      //       var id_ras = $(this).data('id_ras');
-      //       var id_capitulo = $(this).data('id_capitulo');
-      //       var title = $(this).data('title');
-      //       var content = $(this).data('content');
-
-      //       console.log("Passou do confirm");
-
-      //       $.ajax({
-      //         type: 'POST',
-      //         url: 'http://localhost/dashboard/NovelRealm/app/controllers/updateCapituloController.php',
-      //         data: {
-      //           id: id_ras,
-      //           id_capitulo: id_capitulo,
-      //           title: title,
-      //           content: content,
-      //           rascunho: "N",
-      //         },
-      //         success: function(data) {
-      //           console.log(data);
-      //           window.location.href = "?cap=" + data['id'];
-      //         }
-      //       });
-      //     } else {
-      //       console.log("Cancelado com sucesso :)");
-      //     }
-      //   });
-      // <?php endif; ?>
     });
   </script>
 </body>

@@ -6,9 +6,9 @@ session_start();
 
 require_once __DIR__ . '\..\..\autoload.php';
 
-use NovelRealm\ChapterModel;
+use NovelRealm\ChapterDao;
 
-$obj_chapter = new ChapterModel;
+$obj_chapter = new ChapterDao;
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 

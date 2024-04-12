@@ -6,9 +6,9 @@ header('Content-Type: application/json');
 
 require_once __DIR__ . '\..\..\autoload.php';
 
-use NovelRealm\MangaModel;
+use NovelRealm\MangaDao;
 
-$obj_manga = new MangaModel;
+$obj_manga = new MangaDao;
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['search'])) {
   $search = mb_convert_case($_GET['search'], MB_CASE_TITLE);

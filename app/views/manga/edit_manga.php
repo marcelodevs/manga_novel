@@ -6,22 +6,22 @@ require_once __DIR__ . '\..\..\..\autoload.php';
 
 session_start();
 
-use NovelRealm\MangaModel;
-use NovelRealm\UserModel;
-use NovelRealm\ChapterModel;
-use NovelRealm\CommentsModel;
-use NovelRealm\GenerosModel;
+use NovelRealm\MangaDao;
+use NovelRealm\UserDao;
+use NovelRealm\ChapterDao;
+use NovelRealm\CommentsDao;
+use NovelRealm\GenerosDao;
 
-$obj_manga = new MangaModel;
-$obj_user = new UserModel;
-$obj_chapter = new ChapterModel;
-$obj_comments = new CommentsModel;
-$obj_genres = new GenerosModel;
+$obj_manga = new MangaDao;
+$obj_user = new UserDao;
+$obj_chapter = new ChapterDao;
+$obj_comments = new CommentsDao;
+$obj_genres = new GenerosDao;
 
 if (isset($_SESSION['login_user'])) {
   $user = $obj_user->list_user($_SESSION['login_user'])['data'];
 } else {
-  header("Location: ../usuario/index.php");
+  header("Location: ../../../404.php?type=manga&error=3");
 }
 
 if (isset($_GET['manga'])) {
@@ -40,7 +40,7 @@ if (isset($_GET['manga'])) {
 
     $genero_manga = $obj_genres->list_genres_manga($id_manga)['data'];
   } else {
-    header("Location: ../usuario/index.php");
+    header("Location: ../../../404.php?type=manga&error=2");
   }
 
   $chapter = $obj_chapter->list_chapter(['id_manga' => $id_manga]);
@@ -70,14 +70,14 @@ if (isset($_GET['manga'])) {
 
     $autor = $obj_user->list_user(["id_user" => $manga['autor']])['data'];
   } else {
-    header("Location: ../usuario/index.php");
+    header("Location: ../../../404.php?type=manga&error=2");
   }
 
   $chapter = $obj_chapter->list_chapter(['id_manga' => $id_manga]);
 
   $comments = $obj_comments->list_comments_manga($id_manga);
 } else {
-  header("Location: ../usuario/index.php");
+  header("Location: ../../../404.php?type=manga&error=1");
   // var_dump($_GET);
 }
 

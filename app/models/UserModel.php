@@ -2,190 +2,153 @@
 
 namespace NovelRealm;
 
-require_once __DIR__ . '\..\..\autoload.php';
-
-use NovelRealm\Database;
-
-class UserModel extends Database
+class UserModel
 {
-  public $con;
+  private int $id_user;
+  private string $nome;
+  private string $email;
+  private string $senha;
+  private string $image;
+  private string $dark_mode;
+  private string $show_fone;
 
-  public function __construct()
+  /**
+   * Get the value of id_user
+   */
+  public function getId_user()
   {
-    $this->con = new Database;
+    return $this->id_user;
   }
 
   /**
-   * CRUD
-   * @author Marcelo
+   * Set the value of id_user
+   *
+   * @return  self
    */
-
-  public function add_user($data): bool
+  public function setId_user($id_user)
   {
-    // var_dump($data);
+    $this->id_user = $id_user;
 
-    $con = $this->con->connect();
-    $nome = mysqli_real_escape_string($con, $data['nome']);
-    $email = mysqli_real_escape_string($con, $data['email']);
-    $senha = mysqli_real_escape_string($con, $data['senha']);
-    $img = mysqli_real_escape_string($con, $data['img']);
-
-    $query = mysqli_query($con, "INSERT INTO usuarios (nome, email, senha, img) VALUES ('$nome', '$email', '$senha', '$img')");
-
-    if ($query) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  public function list_user($data = null): array
-  {
-    $con = $this->con->connect();
-
-    if (!is_null($data) && is_array($data)) {
-      $id = isset($data['id_user']) ? mysqli_real_escape_string($con, $data['id_user']) : '';
-      $email = isset($data['email']) ? mysqli_real_escape_string($con, $data['email']) : '';
-
-      $query = mysqli_query($con, "SELECT * FROM usuarios WHERE id_user = " . (int)$id . " OR email = '$email' OR nome = '$email'");
-
-      if ($query) {
-        $response = mysqli_fetch_all($query, MYSQLI_ASSOC);
-
-        if (count($response) > 0) {
-          return [
-            "status" => true,
-            "data" => $response[0]
-          ];
-        } else {
-          return [
-            "status" => false,
-            "data" => "Nenhum usuário encontrado"
-          ];
-        }
-      } else {
-        return [
-          "status" => false,
-          "data" => "Erro ao executar a consulta: " . mysqli_error($con)
-        ];
-      }
-    } else {
-      $query = mysqli_query($con, "SELECT * FROM usuarios");
-
-      if ($query) {
-        $response = array();
-        while ($row = mysqli_fetch_assoc($query)) {
-          $response[] = $row;
-        }
-
-        if (count($response) > 0) {
-          return [
-            "status" => true,
-            "data" => $response
-          ];
-        } else {
-          return [
-            "status" => false,
-            "data" => "Nenhum usuário existente no banco de dados"
-          ];
-        }
-      } else {
-        return [
-          "status" => false,
-          "data" => "Erro ao executar a consulta: " . mysqli_error($con)
-        ];
-      }
-    }
-  }
-
-  public function update_user($data): bool
-  {
-    $con = $this->con->connect();
-    $nome  = mysqli_real_escape_string($con, $data['nome']);
-    $email = mysqli_real_escape_string($con, $data['email']);
-    $img = mysqli_real_escape_string($con, $data['img']);
-
-    $query = mysqli_query(
-      $con,
-      "UPDATE usuarios SET email = '$email', img = '$img', nome = '$nome' WHERE email = '$email'"
-    );
-
-    // var_dump($query);
-
-    if ($query) {
-      return true;
-    } else {
-      return false;
-    }
+    return $this;
   }
 
   /**
-   * OUTROS MÉTODOS
-   * @author Marcelo
+   * Get the value of nome
    */
-
-  public function login_user($data): array
+  public function getNome()
   {
-    $conn = $this->con->connect();
-
-    $email = mysqli_real_escape_string($conn, $data['email']);
-    $nome = mysqli_real_escape_string($conn, $data['nome']);
-    $password = mysqli_real_escape_string($conn, $data['senha']);
-
-    // var_dump($data);
-
-    $query = mysqli_query(
-      $conn,
-      "SELECT * FROM usuarios WHERE (email = '$email' AND senha = '$password') OR (nome = '$nome' AND senha = '$password')"
-    );
-
-    // var_dump($query);
-
-    if ($query) {
-      if (mysqli_num_rows($query) > 0) {
-        $response = mysqli_fetch_assoc($query);
-        return [
-          "status" => true,
-          "data" => $response
-        ];
-      } else {
-        return [
-          "status" => false,
-          "data" => "Nenhum usuario foi encontrado"
-        ];
-      }
-    } else {
-      return "erro ao executar mysql";
-    }
+    return $this->nome;
   }
 
-  public function get_preferences_dark_mode($data)
+  /**
+   * Set the value of nome
+   *
+   * @return  self
+   */
+  public function setNome($nome)
   {
-    $con = $this->con->connect();
-    $id = mysqli_real_escape_string($con, $data);
+    $this->nome = $nome;
 
-    $query = mysqli_query($con, "SELECT dark_mode FROM usuarios WHERE id_user = " . (int)$id);
-
-    if ($query) {
-      $result = mysqli_fetch_assoc($query);
-      if ($result && $result['dark_mode'] === 'S') {
-        return true;
-      }
-    }
-    return false;
+    return $this;
   }
 
-  public function set_preferences_dark_mode($data, $situacao)
+  /**
+   * Get the value of email
+   */
+  public function getEmail()
   {
-    $con = $this->con->connect();
-    $username = mysqli_real_escape_string($con, $data);
-    $situacao = mysqli_real_escape_string($con, $situacao);
+    return $this->email;
+  }
 
-    $query = mysqli_query($con, "UPDATE usuarios SET dark_mode = '$situacao' WHERE id_user = '$username'");
+  /**
+   * Set the value of email
+   *
+   * @return  self
+   */
+  public function setEmail($email)
+  {
+    $this->email = $email;
 
-    if ($query) {
-      return true;
-    }
-    return false;
+    return $this;
+  }
+
+  /**
+   * Get the value of senha
+   */
+  public function getSenha()
+  {
+    return $this->senha;
+  }
+
+  /**
+   * Set the value of senha
+   *
+   * @return  self
+   */
+  public function setSenha($senha)
+  {
+    $this->senha = $senha;
+
+    return $this;
+  }
+
+  /**
+   * Get the value of image
+   */
+  public function getImage()
+  {
+    return $this->image;
+  }
+
+  /**
+   * Set the value of image
+   *
+   * @return  self
+   */
+  public function setImage($image)
+  {
+    $this->image = $image;
+
+    return $this;
+  }
+
+  /**
+   * Get the value of dark_mode
+   */
+  public function getDark_mode()
+  {
+    return $this->dark_mode;
+  }
+
+  /**
+   * Set the value of dark_mode
+   *
+   * @return  self
+   */
+  public function setDark_mode($dark_mode)
+  {
+    $this->dark_mode = $dark_mode;
+
+    return $this;
+  }
+
+  /**
+   * Get the value of show_fone
+   */
+  public function getShow_fone()
+  {
+    return $this->show_fone;
+  }
+
+  /**
+   * Set the value of show_fone
+   *
+   * @return  self
+   */
+  public function setShow_fone($show_fone)
+  {
+    $this->show_fone = $show_fone;
+
+    return $this;
   }
 }

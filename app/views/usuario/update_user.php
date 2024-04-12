@@ -6,14 +6,14 @@ session_start();
 
 require_once __DIR__ . '\..\..\..\autoload.php';
 
-use NovelRealm\UserModel;
+use NovelRealm\UserDao;
 
-$obj_user = new UserModel;
+$obj_user = new UserDao;
 
 if (isset($_SESSION['login_user'])) {
   $user = $obj_user->list_user($_SESSION['login_user'])['data'];
 } else {
-  header("Location: ./index.php");
+  header("Location: Location: ../../../404.php?type=user&error=1");
 }
 
 ?>

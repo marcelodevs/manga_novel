@@ -4,9 +4,9 @@ namespace NovelRealm;
 
 require_once __DIR__ . '\..\..\autoload.php';
 
-use NovelRealm\UserModel;
+use NovelRealm\UserDao;
 
-$obj_user = new UserModel;
+$obj_user = new UserDao;
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 

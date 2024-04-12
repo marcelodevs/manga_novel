@@ -2,199 +2,133 @@
 
 namespace NovelRealm;
 
-require_once __DIR__ . '\..\..\autoload.php';
 
-use NovelRealm\Database;
-
-class ChapterModel extends Database
+class ChapterModel
 {
-  public $con;
+  private int $id_capitulo;
+  private int $id_manga;
+  private int $id_user;
+  private string $title;
+  private string $content;
+  private string $rascunho;
 
-  public function __construct()
+  /**
+   * Get the value of id_capitulo
+   */ 
+  public function getId_capitulo()
   {
-    $this->con = new Database;
+    return $this->id_capitulo;
   }
 
   /**
-   * CRUD
-   * 
-   * @author Marcelo
-   */
-
-  public function add_chapter($data): bool
+   * Set the value of id_capitulo
+   *
+   * @return  self
+   */ 
+  public function setId_capitulo($id_capitulo)
   {
-    $con = $this->con->connect();
+    $this->id_capitulo = $id_capitulo;
 
-    $id_capitulo = mysqli_real_escape_string($con, $data['id_capitulo']);
-    $id_manga = mysqli_real_escape_string($con, $data['id_manga']);
-    $id_user = mysqli_real_escape_string($con, $data['id_user']);
-    $title = mysqli_real_escape_string($con, $data['title']);
-    $content = mysqli_real_escape_string($con, $data['content']);
-    $rascunho = mysqli_real_escape_string($con, $data['rascunho']);
-
-    $query = mysqli_query($con, "INSERT INTO capitulo (id_capitulo, id_manga, title, content, rascunho) VALUES ('$id_capitulo', '$id_manga', '$title', '$content', '$rascunho')");
-
-    if ($query) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  public function list_chapter($data = null): array
-  {
-    $con = $this->con->connect();
-
-    if (!is_null($data) && is_array($data)) {
-      $id_manga = isset($data['id_manga']) ? mysqli_real_escape_string($con, $data['id_manga']) : '';
-      $id_chapter = isset($data['id']) ? mysqli_real_escape_string($con, $data['id']) : '';
-      $chapter = isset($data['chapter']) ? mysqli_real_escape_string($con, $data['chapter']) : '';
-
-      $query = mysqli_query($con, "SELECT * FROM capitulo WHERE (id = " . (int)$id_chapter . " AND rascunho = 'N') OR (id_manga = " . (int)$id_manga . " AND rascunho = 'N') OR (id_manga = " . (int)$id_manga . " AND id_capitulo = '$chapter') ORDER BY id_capitulo ASC");
-
-      if ($query) {
-        $response = mysqli_fetch_all($query, MYSQLI_ASSOC);
-
-        if (count($response) > 0) {
-          return ["status" => true, "data" => $response];
-        } else {
-          return ["status" => false, "data" => "Nenhum capítulo encontrado"];
-        }
-      } else {
-        return ["status" => false, "data" => "Erro ao executar a consulta: " . mysqli_error($con)];
-      }
-    } else {
-      $query = mysqli_query($con, "SELECT * FROM capitulo WHERE rascunho = 'N' ORDER BY id_capitulo ASC");
-
-      if ($query) {
-        $response = array();
-        while ($row = mysqli_fetch_assoc($query)) {
-          $response[] = $row;
-        }
-
-        if (count($response) > 0) {
-          return ["status" => true, "data" => $response];
-        } else {
-          return ["status" => false, "data" => "Nenhum capítulo existente no banco de dados"];
-        }
-      } else {
-        return ["status" => false, "data" => "Erro ao executar a consulta: " . mysqli_error($con)];
-      }
-    }
+    return $this;
   }
 
   /**
-   * MÉTODO PARA RETORNAR OS CAPÍTULOS SALVOS NO RASCUNHO
-   * 
-   * @author Marcelo
-   */
-
-  public function return_sketch($data): array
+   * Get the value of id_manga
+   */ 
+  public function getId_manga()
   {
-    $con = $this->con->connect();
-
-    $id_author = mysqli_real_escape_string($con, $data);
-
-    $query = mysqli_query($con, "SELECT * FROM capitulo WHERE (id_usuario = " . (int)$id_author . " AND rascunho = 'S') OR (id = " . (int)$id_author . " AND rascunho = 'S')");
-
-    if ($query) {
-      $response = array();
-      while ($row = mysqli_fetch_assoc($query)) {
-        $response[] = $row;
-      }
-
-      if (count($response) > 0) {
-        return [
-          "status" => true,
-          "data" => $response
-        ];
-      } else {
-        return [
-          "status" => false,
-          "data" => "Nenhum rascunho existente no banco de dados"
-        ];
-      }
-    }
+    return $this->id_manga;
   }
 
   /**
-   * MÉTODO PARA ATUALIZAR RASCUNHO
-   * 
-   * @author Marcelo
-   */
-
-  public function update_sketch($data): bool
+   * Set the value of id_manga
+   *
+   * @return  self
+   */ 
+  public function setId_manga($id_manga)
   {
-    $con = $this->con->connect();
+    $this->id_manga = $id_manga;
 
-    $id = mysqli_real_escape_string($con, $data['id']);
-    $id_capitulo = mysqli_real_escape_string($con, $data['id_capitulo']);
-    $title = mysqli_real_escape_string($con, $data['title']);
-    $content = mysqli_real_escape_string($con, $data['content']);
-    $rascunho = mysqli_real_escape_string($con, $data['rascunho']);
-
-    $query = mysqli_query($con, "UPDATE capitulo SET id_capitulo = '$id_capitulo', title = '$title', content = '$content', rascunho = '$rascunho' WHERE id = '$id'");
-
-    if ($query) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  public function list_chapter_id($data): array
-  {
-    $con = $this->con->connect();
-    $id_manga = isset($data['id_manga']) ? mysqli_real_escape_string($con, $data['id_manga']) : '';
-    $chapter = isset($data['chapter']) ? mysqli_real_escape_string($con, $data['chapter']) : '';
-
-    $query = mysqli_query($con, "SELECT * FROM capitulo WHERE id_manga = " . (int)$id_manga . " AND id_capitulo = '$chapter' AND rascunho = 'N' ORDER BY id_capitulo ASC");
-
-    if ($query) {
-      $response = mysqli_fetch_all($query, MYSQLI_ASSOC);
-
-      if (count($response) > 0) {
-        return ["status" => true, "data" => $response];
-      } else {
-        return ["status" => false, "data" => "Nenhum capítulo encontrado"];
-      }
-    } else {
-      return ["status" => false, "data" => "Erro ao executar a consulta: " . mysqli_error($con)];
-    }
+    return $this;
   }
 
   /**
-   * MÉTODO PARA PASSAR OU VOLTAR OS CAPÍTULOS
-   * 
-   * @author Marcelo
-   */
-
-  public function validation_chapter($cap, $manga, $action)
+   * Get the value of id_user
+   */ 
+  public function getId_user()
   {
-    $manga_validation = ChapterModel::list_chapter(['id_manga' => $manga]);
-    $res = null;
+    return $this->id_user;
+  }
 
+  /**
+   * Set the value of id_user
+   *
+   * @return  self
+   */ 
+  public function setId_user($id_user)
+  {
+    $this->id_user = $id_user;
 
-    if ($action == "pro") {
-      foreach ($manga_validation['data'] as $validation) {
-        // var_dump($validation);
-        if ($cap + 1 == $validation['id_capitulo'] && $validation['id_manga'] == $manga) {
-          $res = $cap + 1;
-          break;
-        }
-      }
-    } elseif ($action == "ant") {
-      foreach ($manga_validation['data'] as $validation) {
-        if ($cap - 1 == $validation['id_capitulo'] && $validation['id_manga'] == $manga) {
-          $res = $cap - 1;
-          break;
-        }
-      }
-    }
+    return $this;
+  }
 
-    if ($res != null) {
-      $handle_chapter = ChapterModel::list_chapter_id(['chapter' => $res, 'id_manga' => $manga]);
-      return $handle_chapter['data'][0]['id'];
-    }
+  /**
+   * Get the value of title
+   */ 
+  public function getTitle()
+  {
+    return $this->title;
+  }
+
+  /**
+   * Set the value of title
+   *
+   * @return  self
+   */ 
+  public function setTitle($title)
+  {
+    $this->title = $title;
+
+    return $this;
+  }
+
+  /**
+   * Get the value of content
+   */ 
+  public function getContent()
+  {
+    return $this->content;
+  }
+
+  /**
+   * Set the value of content
+   *
+   * @return  self
+   */ 
+  public function setContent($content)
+  {
+    $this->content = $content;
+
+    return $this;
+  }
+
+  /**
+   * Get the value of rascunho
+   */ 
+  public function getRascunho()
+  {
+    return $this->rascunho;
+  }
+
+  /**
+   * Set the value of rascunho
+   *
+   * @return  self
+   */ 
+  public function setRascunho($rascunho)
+  {
+    $this->rascunho = $rascunho;
+
+    return $this;
   }
 }

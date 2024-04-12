@@ -260,3 +260,17 @@ button:hover {
   font-size: 14px;
   cursor: pointer;
 }
+
+/* BOTÃO DE VOLTAR */
+
+.btn-voltar {
+  border-radius: 50%;
+  border: none;
+  background-color: #00008b;
+  z-index: 20;
+  position: fixed;
+  font-size: 1.5em;
+  bottom: 10%;
+  left: 90%;
+  cursor: pointer;
+}

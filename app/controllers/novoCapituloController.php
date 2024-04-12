@@ -6,11 +6,11 @@ session_start();
 
 require_once __DIR__ . '\..\..\autoload.php';
 
-use NovelRealm\ChapterModel;
-use NovelRealm\MangaModel;
+use NovelRealm\ChapterDao;
+use NovelRealm\MangaDao;
 
-$obj_chapter = new ChapterModel;
-$obj_manga = new MangaModel;
+$obj_chapter = new ChapterDao;
+$obj_manga = new MangaDao;
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
@@ -70,23 +70,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
   var_dump($data);
 
-  // $res = $obj_chapter->add_chapter($data);
+  $res = $obj_chapter->add_chapter($data);
 
-  // if ($res) {
-  //   $manga_adicionado = $obj_manga->list_manga_id($id_manga);
-  //   if ($manga_adicionado) {
-  //     $quantidade_incrementada = $manga_adicionado['data'][0]['quantidade_capitulo'] + 1;
-  //     $data_update = array("quantidade_incrementada" => $quantidade_incrementada, "id_manga" => $id_manga);
-  //     var_dump($data_update);
-  //     $up = $obj_manga->update_qntd_chapter($data_update);
-  //     // var_dump($up);
-  //     if ($up) {
-  //       header("Location: ../views/usuario/index.php");
-  //     } else {
-  //       echo $up['data'];
-  //     }
-  //   }
-  // } else {
-  //   echo $res['data'];
-  // }
+  if ($res) {
+    $manga_adicionado = $obj_manga->list_manga_id($id_manga);
+    if ($manga_adicionado) {
+      $quantidade_incrementada = $manga_adicionado['data'][0]['quantidade_capitulo'] + 1;
+      $data_update = array("quantidade_incrementada" => $quantidade_incrementada, "id_manga" => $id_manga);
+      var_dump($data_update);
+      $up = $obj_manga->update_qntd_chapter($data_update);
+      // var_dump($up);
+      if ($up) {
+        header("Location: ../views/usuario/index.php");
+      } else {
+        echo $up['data'];
+      }
+    }
+  } else {
+    echo $res['data'];
+  }
 }

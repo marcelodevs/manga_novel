@@ -6,9 +6,9 @@ session_start();
 
 require_once __DIR__ . '\..\..\autoload.php';
 
-use NovelRealm\BookmarkModel;
+use NovelRealm\BookmarkDao;
 
-$obj_bookmark = new BookmarkModel;
+$obj_bookmark = new BookmarkDao;
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 

@@ -6,17 +6,17 @@ session_start();
 
 require_once __DIR__ . '\..\..\..\autoload.php';
 
-use NovelRealm\UserModel;
-use NovelRealm\MangaModel;
-use NovelRealm\GenerosModel;
-use NovelRealm\BookmarkModel;
-use NovelRealm\ChapterModel;
+use NovelRealm\UserDao;
+use NovelRealm\MangaDao;
+use NovelRealm\GenerosDao;
+use NovelRealm\BookmarkDao;
+use NovelRealm\ChapterDao;
 
-$obj_user = new UserModel;
-$obj_manga = new MangaModel;
-$obj_genres = new GenerosModel;
-$obj_bookmark = new BookmarkModel;
-$obj_chapter = new ChapterModel;
+$obj_user = new UserDao;
+$obj_manga = new MangaDao;
+$obj_genres = new GenerosDao;
+$obj_bookmark = new BookmarkDao;
+$obj_chapter = new ChapterDao;
 
 if (isset($_SESSION['login_user'])) {
   $user = $obj_user->list_user($_SESSION['login_user'])['data'];
@@ -31,7 +31,7 @@ if (isset($_SESSION['login_user'])) {
 
   // var_dump($count_rascunho);
 } else {
-  header("Location: ./index.php");
+  header("Location: Location: ../../../404.php?type=user&error=1");
 }
 
 // var_dump($manga_user);
@@ -80,7 +80,6 @@ if (isset($_SESSION['login_user'])) {
   </header>
 
   <main>
-
     <div class="card">
       <div class="left">
         <img src="data:image/*;base64,<?php echo $user['img']; ?>" alt="Hembo Tingor" class="avatar">

@@ -6,9 +6,9 @@ session_start();
 
 require_once __DIR__ . '\..\..\autoload.php';
 
-use NovelRealm\UserModel;
+use NovelRealm\UserDao;
 
-$obj_user = new UserModel;
+$obj_user = new UserDao;
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
   $res = $obj_user->update_user($data);
 
-  if ($res['status']) {
+  if ($res) {
     header("Location: ../views/usuario/update_user.php");
   } else {
     echo $res['data'];

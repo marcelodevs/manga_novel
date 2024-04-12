@@ -6,9 +6,9 @@ session_start();
 
 require_once __DIR__ . '\..\..\autoload.php';
 
-use NovelRealm\CommentsModel;
+use NovelRealm\CommentsDao;
 
-$obj_comments = new CommentsModel;
+$obj_comments = new CommentsDao;
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 

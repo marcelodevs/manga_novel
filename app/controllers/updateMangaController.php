@@ -6,11 +6,11 @@ session_start();
 
 require_once __DIR__ . '\..\..\autoload.php';
 
-use NovelRealm\MangaModel;
-use NovelRealm\GenerosModel;
+use NovelRealm\MangaDao;
+use NovelRealm\GenerosDao;
 
-$obj_manga = new MangaModel;
-$obj_gerens = new GenerosModel;
+$obj_manga = new MangaDao;
+$obj_gerens = new GenerosDao;
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 

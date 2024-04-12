@@ -2,101 +2,49 @@
 
 namespace NovelRealm;
 
-require_once __DIR__ . '\..\..\autoload.php';
+class GenereosModel {
+  private int $id_genero;
+  private string $genero_nome;
 
-use NovelRealm\Database;
+  
 
-class GenerosModel extends Database
-{
-  private $con;
-
-  public function __construct()
+  /**
+   * Get the value of id_genero
+   */ 
+  public function getId_genero()
   {
-    $this->con = new Database;
+    return $this->id_genero;
   }
 
   /**
-   * CRUD
-   * 
-   * @author Marcelo
-   */
-
-  public function list_genres(): array
+   * Set the value of id_genero
+   *
+   * @return  self
+   */ 
+  public function setId_genero($id_genero)
   {
-    $con = $this->con->connect();
+    $this->id_genero = $id_genero;
 
-    $query = mysqli_query($con, "SELECT * FROM generos");
-
-    if ($query) {
-      $response = array();
-      while ($row = mysqli_fetch_assoc($query)) {
-        $response[] = $row;
-      }
-
-      if (count($response) > 0) {
-        return [
-          "status" => true,
-          "data" => $response
-        ];
-      } else {
-        return [
-          "status" => false,
-          "data" => "Nenhum gênero existente no banco de dados"
-        ];
-      }
-    }
+    return $this;
   }
 
-  public function list_genres_id($data): array
+  /**
+   * Get the value of genero_nome
+   */ 
+  public function getGenero_nome()
   {
-    $con = $this->con->connect();
-
-    // var_dump($data);
-
-    $id_genre = mysqli_real_escape_string($con, $data);
-
-    $query = mysqli_query($con, "SELECT * FROM generos WHERE id_genero = " . (int)$id_genre . " OR genero_nome = '$id_genre'");
-
-    if ($query) {
-      $response = mysqli_fetch_assoc($query);
-
-      if (count($response) > 0) {
-        // var_dump($response);
-        return [
-          "status" => true,
-          "data" => $response
-        ];
-      } else {
-        return [
-          "status" => false,
-          "data" => "Nenhum gênero existente no banco de dados"
-        ];
-      }
-    }
+    return $this->genero_nome;
   }
 
-  public function list_genres_manga($data): array
+  /**
+   * Set the value of genero_nome
+   *
+   * @return  self
+   */ 
+  public function setGenero_nome($genero_nome)
   {
-    $con = $this->con->connect();
+    $this->genero_nome = $genero_nome;
 
-    $id = mysqli_real_escape_string($con, $data);
-
-    $query = mysqli_query($con, "SELECT * FROM manga_genero WHERE id_manga = " . (int)$id);
-
-    if ($query) {
-      $response = mysqli_fetch_all($query, MYSQLI_ASSOC);
-
-      if (count($response) > 0) {
-        return [
-          "status" => true,
-          "data" => $response
-        ];
-      } else {
-        return [
-          "status" => false,
-          "data" => "Nenhum gênero existente no banco de dados"
-        ];
-      }
-    }
+    return $this;
   }
 }

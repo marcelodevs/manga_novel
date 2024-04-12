@@ -6,17 +6,17 @@ require_once __DIR__ . '\..\..\..\autoload.php';
 
 session_start();
 
-use NovelRealm\UserModel;
-use NovelRealm\ChapterModel;
-use NovelRealm\MangaModel;
-use NovelRealm\GenerosModel;
-use NovelRealm\CommentsModel;
+use NovelRealm\UserDao;
+use NovelRealm\ChapterDao;
+use NovelRealm\MangaDao;
+use NovelRealm\GenerosDao;
+use NovelRealm\CommentsDao;
 
-$obj_user = new UserModel;
-$obj_chapter = new ChapterModel;
-$obj_manga = new MangaModel;
-$obj_genres = new GenerosModel;
-$obj_comments = new CommentsModel;
+$obj_user = new UserDao;
+$obj_chapter = new ChapterDao;
+$obj_manga = new MangaDao;
+$obj_genres = new GenerosDao;
+$obj_comments = new CommentsDao;
 
 if (isset($_SESSION['login_user'])) {
   $user = $obj_user->list_user($_SESSION['login_user'])['data'];
@@ -111,6 +111,11 @@ if (isset($_GET['id'])) {
   </header>
 
   <main>
+    <div class="acoes">
+      <a href="./index.php?id=<?php echo $obj_chapter->validation_chapter($chapter['id_capitulo'], $manga['id_manga'], 'ant'); ?>"><button>Anterior</button></a>
+      <a href="../manga/index.php?manga=<?php echo $chapter['id_manga']; ?>"><button>Mangá</button></a>
+      <a href="./index.php?id=<?php echo $obj_chapter->validation_chapter($chapter['id_capitulo'], $manga['id_manga'], 'pro'); ?>"><button>Próximo</button></a>
+    </div>
     <div class="manga">
       <div class="manga_nome">
         <p><?php echo $manga['nome'] ?></p>
@@ -125,13 +130,17 @@ if (isset($_GET['id'])) {
       </div>
       <br>
       <div class="content">
-        <pre style="white-space: pre-wrap;"><?php echo $chapter['content'] ?></pre>
+        <pre id="substr" style="white-space: pre-wrap;"><?php echo substr($chapter['content'], 0, 1000) ?>...
+        </pre>
+        <?php if (strlen($chapter['content']) > 1000) : ?>
+          <button onclick="toggleChapter()">Mostrar mais</button>
+        <?php endif; ?>
+        <pre id="fullContent" style="display:none; white-space: pre-wrap;"><?php echo $chapter['content'] ?></pre>
       </div>
     </div>
-    <!-- PRECISA AJEITAR A ORDEM DOS CAPÍTULOS -->
     <div class="acoes">
       <a href="./index.php?id=<?php echo $obj_chapter->validation_chapter($chapter['id_capitulo'], $manga['id_manga'], 'ant'); ?>"><button>Anterior</button></a>
-      <a href="../manga/index.php"><button>Mangá</button></a>
+      <a href="../manga/index.php?manga=<?php echo $chapter['id_manga']; ?>"><button>Mangá</button></a>
       <a href="./index.php?id=<?php echo $obj_chapter->validation_chapter($chapter['id_capitulo'], $manga['id_manga'], 'pro'); ?>"><button>Próximo</button></a>
     </div>
     <div class="comentarios-container">
@@ -149,6 +158,7 @@ if (isset($_GET['id'])) {
         <?php
         foreach ($comments['data'] as $comentarios) :
           $user_comment = $obj_user->list_user(['id_user' => $comentarios['id_user']])['data'];
+          $verification_like_comment = $obj_chapter->check_if_user_liked_comment($comentarios['id_comments'], $user_comment['id_user']);
         ?>
           <div class="comments" id="comment_<?php echo $comentarios['id_comments']; ?>">
             <div class="info-user">
@@ -157,7 +167,7 @@ if (isset($_GET['id'])) {
             </div>
             <p class="comment-text"><?php echo $comentarios['comments_capitulo']; ?></p>
             <div class="actions">
-              <img src="../Icons/like.png" width="15" height="15" class="like-btn" data-comment-id="<?php echo $comentarios['id_comments']; ?>">
+              <img src="../Icons/like<?php echo $verification_like_comment ? '-preenchido' : '' ?>.png" width="15" height="15" class="like-btn" data-comment-id="<?php echo $comentarios['id_comments']; ?>" data-user-id="<?php echo $comentarios['id_user']; ?>">
               <span class="likes-count"><?php echo $comentarios['curtidas']; ?></span>
               <p>Responder</p>
             </div>
@@ -168,9 +178,37 @@ if (isset($_GET['id'])) {
         <p>Nenhum comentário adicionado, seja o primeiro a comentar!</p>
       <?php } ?>
     </div>
+
   </main>
 
+  <section class="btn-voltar">
+    <button onclick="voltar()" class="voltar">⬆</button>
+  </section>
+
+  <script src="../src/scripts/jquery-3.7.1.min.js"></script>
   <script>
+    function voltar() {
+      window.scroll({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }
+
+    function toggleChapter() {
+      var fullContent = document.getElementById('fullContent');
+      var substr = document.getElementById('substr');
+      var button = document.querySelector('.content button');
+
+      if (fullContent.style.display === 'none') {
+        fullContent.style.display = 'block';
+        substr.style.display = 'none';
+        button.style.display = 'none';
+      } else {
+        fullContent.style.display = 'none';
+        button.textContent = 'Mostrar mais';
+      }
+    }
+
     const searchInput = document.getElementById('search');
     const searchResults = document.getElementById('search-results');
 
@@ -204,16 +242,28 @@ if (isset($_GET['id'])) {
     $(document).ready(function() {
       $('.like-btn').click(function() {
         var commentId = $(this).data('comment-id');
+        var userId = $(this).data('user-id');
         var likesCount = $(this).siblings('.likes-count');
+
+        if ($(this).hasClass('liked')) {
+          console.dir(newLikesCount);
+          return;
+        }
 
         $.ajax({
           type: 'POST',
           url: '../../controllers/curtidaComentarioController.php',
           data: {
-            comment_id: commentId
+            comment_id: commentId,
+            user_id: userId
           },
           success: function(newLikesCount) {
-            likesCount.text(newLikesCount);
+            if (newLikesCount.status) {
+              likesCount.text(newLikesCount.data[0].curtidas);
+            }
+          },
+          error: function(error) {
+            alert(error);
           }
         });
       });

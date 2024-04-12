@@ -6,17 +6,17 @@ require_once __DIR__ . '\..\..\..\autoload.php';
 
 session_start();
 
-use NovelRealm\UserModel;
-use NovelRealm\ChapterModel;
-use NovelRealm\MangaModel;
-use NovelRealm\GenerosModel;
-use NovelRealm\CommentsModel;
+use NovelRealm\UserDao;
+use NovelRealm\ChapterDao;
+use NovelRealm\MangaDao;
+use NovelRealm\GenerosDao;
+use NovelRealm\CommentsDao;
 
-$obj_user = new UserModel;
-$obj_chapter = new ChapterModel;
-$obj_manga = new MangaModel;
-$obj_genres = new GenerosModel;
-$obj_comments = new CommentsModel;
+$obj_user = new UserDao;
+$obj_chapter = new ChapterDao;
+$obj_manga = new MangaDao;
+$obj_genres = new GenerosDao;
+$obj_comments = new CommentsDao;
 
 if (isset($_SESSION['login_user'])) {
   $user = $obj_user->list_user($_SESSION['login_user'])['data'];
@@ -147,7 +147,7 @@ if (isset($_GET['cap'])) {
         </div>
         <br>
         <div class="content">
-          <textarea style="white-space: pre-wrap;" name="content"><?php echo $chapter['content'] ?></textarea>
+          <textarea id="chapter-content" style="white-space: pre-wrap;" name="content"><?php echo $chapter['content'] ?></textarea>
         </div>
       </form>
       <div class="acoes">
@@ -165,6 +165,12 @@ if (isset($_GET['cap'])) {
           <img src="../Icons/delte.png" width="15" height="15">
           Excluir
         </button>
+        <a href="?cap=<?php echo $chapter['id'] ?>">
+          <button type="button" style="display: flex; align-items: center; gap: 10px;">
+            <img src="../Icons/delte.png" width="15" height="15">
+            Cancelar
+          </button>
+        </a>
       </div>
       <!-- VISUALIZAR CAPÍTULO -->
     <?php elseif (isset($_GET['cap'])) : ?>
@@ -264,19 +270,49 @@ if (isset($_GET['cap'])) {
     $(document).ready(function() {
       $('.like-btn').click(function() {
         var commentId = $(this).data('comment-id');
+        var userId = $(this).data('user-id');
         var likesCount = $(this).siblings('.likes-count');
+
+        if ($(this).hasClass('liked')) {
+          console.dir(newLikesCount);
+          return;
+        }
 
         $.ajax({
           type: 'POST',
           url: '../../controllers/curtidaComentarioController.php',
           data: {
-            comment_id: commentId
+            comment_id: commentId,
+            user_id: userId
           },
           success: function(newLikesCount) {
-            likesCount.text(newLikesCount);
+            if (newLikesCount.status) {
+              likesCount.text(newLikesCount.data[0].curtidas);
+            }
+          },
+          error: function(error) {
+            alert(error);
           }
         });
       });
+    });
+
+    var textarea = document.getElementById('chapter-content');
+
+    textarea.addEventListener('input', function() {
+      var startPos = textarea.selectionStart;
+      var endPos = textarea.selectionEnd;
+      var text = textarea.value;
+
+      // Aplica negrito para texto envolto por **
+      text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+      // Adicione mais expressões regulares para outras formatações, como itálico, sublinhado, etc.
+
+      textarea.innerHTML = text;
+
+      // Reposiciona o cursor
+      textarea.setSelectionRange(startPos, endPos);
     });
   </script>
 </body>

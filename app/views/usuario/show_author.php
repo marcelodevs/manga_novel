@@ -6,13 +6,13 @@ session_start();
 
 require_once __DIR__ . '\..\..\..\autoload.php';
 
-use NovelRealm\UserModel;
-use NovelRealm\MangaModel;
-use NovelRealm\GenerosModel;
+use NovelRealm\UserDao;
+use NovelRealm\MangaDao;
+use NovelRealm\GenerosDao;
 
-$obj_user = new UserModel;
-$obj_manga = new MangaModel;
-$obj_genres = new GenerosModel;
+$obj_user = new UserDao;
+$obj_manga = new MangaDao;
+$obj_genres = new GenerosDao;
 
 if (isset($_SESSION['login_user'])) {
   $user = $obj_user->list_user($_SESSION['login_user'])['data'];

@@ -1,3 +1,30 @@
-Site criado no intuito de ajudar a comunidade brasileira que produz mangás. O principal foco é em roteiro, por isso não é preciso saber desenhar seus mangás para usar o site, basta criar uma nova conta, criar um novo mangá e lançar os capítulos
+# MangáRealm • Apresentação
 
-Também vale para Light Novels
+---
+
+Site criado com o objetivo de auxiliar a comunidade brasileira que produz mangás. O foco principal está no roteiro, então não é necessário saber desenhar mangás para utilizar o site. Basta criar uma nova conta, um novo mangá e lançar os capítulos.
+
+Também é válido para Light Novels.
+
+# MangáRealm • Funcionalidades
+
+---
+
+![index.php](./github/index.png)
+
+Neste print, é possível notar que no menu em azul, existem 5 opções:
+
+1. *Busca*: Caso queira encontrar um mangá ou light novel específica, use a barra de pesquisa para fazer a busca.
+
+2. *Criar*: Ao clicar neste botão, você será redirecionado para uma tela onde poderá criar um mangá ou um capítulo para um mangá já criado por você.
+
+3. *Perfil*: No ícone de perfil na parte superior, você acessará seu perfil, onde verá os mangás criados, favoritos e rascunhos. O número flutuante acima do ícone do perfil indica a quantidade de capítulos em rascunho. Quando não há nenhum, não aparecerá nada.
+
+4. *"Tudo"*: São as categorias do site, onde é possível filtrar os mangás/light novels por categoria/gênero.
+
+   - ![generos](./github/generos.png)
+   - ![filtro](./github/filtro.png)
+
+5. *Autores*: Aqui você encontra os autores, que são usuários que postam capítulos de mangás. Para ser considerado um autor no site, é necessário ter pelo menos 1 mangá criado e 1 capítulo para esse mangá.
+
+   - ![autores](./github/autores.png)
